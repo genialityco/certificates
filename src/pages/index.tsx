@@ -1,13 +1,78 @@
-import React from 'react';
-
-import PageSEO from '~/components/PageSEO';
-import AppLayout from '~/layouts/AppLayout';
+import { ActionIcon, Box, Button, Card, Container, Group, Input, Text } from '@mantine/core';
+import React, { useState } from 'react';
+import { FaSearch } from 'react-icons/fa';
+import { useRouter } from 'next/router';
+import { fetchEventUsersData } from '../api';
+import fondoPh from '../Fondo.png';
+const transformFilters = (filters) => {
+  return filters.map((filter) => ({
+    field: filter.id,
+    value: filter.value,
+    comparator: 'like',
+  }));
+};
 
 export default function Page() {
+  const [inputValue, setInputValue] = useState('');
+  const [userData, setUserData] = useState(null);
+  const router = useRouter();
+
+  const handleSearch = async () => {
+    const filters = [{ id: 'properties.numeroDocumento', value: inputValue }];
+    const transformedFilters = transformFilters(filters);
+    const data = await fetchEventUsersData(1, 10, transformedFilters);
+    const user = data.data[0];
+    if (data.data.length === 0) {
+      alert('No existe certificado para este documento.');
+    }
+    setUserData(user);
+    if (user) {
+      router.push(
+        `/certificate?name=${encodeURIComponent(user.properties.names)}&documento=${encodeURIComponent(
+          user.properties.numeroDocumento
+        )}`
+      );
+    }
+  };
+
   return (
-    <>
-      <PageSEO />
-      <AppLayout />
-    </>
+    <Container
+      style={{
+        height: '100vh',
+        width: '100vw',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        background: 'url(https://i.ibb.co/v3PX5Kz/Fondo.png)',
+        backgroundSize: 'contain',
+      }}
+    >
+      <Box px="xl" py="lg">
+        {/* <Group position="center">
+          <Text size="xl" color="blue" mt="lg">
+            ¡Bienvenido! Consulta y descarga tu certificado
+          </Text>
+        </Group> */}
+
+        <Card withBorder shadow="sm" mt="xl" padding="lg">
+          <Text size="md" mb="md" align="center" weight={500}>
+            Para consultar ingresa tu número de documento
+          </Text>
+          <Group>
+            <Input
+              placeholder="Número de documento"
+              radius="md"
+              type="number"
+              value={inputValue}
+              onChange={(e) => setInputValue(e.target.value)}
+              style={{ width: '80%' }}
+            />
+            <ActionIcon variant="filled" color="blue" onClick={handleSearch} style={{ width: '10%' }}>
+              <FaSearch />
+            </ActionIcon>
+          </Group>
+        </Card>
+      </Box>
+    </Container>
   );
 }

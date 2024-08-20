@@ -3,8 +3,8 @@ import { create } from 'zustand';
 import type { CanvasWorkingSize } from '~/config/types';
 
 const DEFAULT_CANVAS_WORKING_SIZE = {
-  width: 500,
-  height: 500,
+  width: 1920,
+  height: 1080,
 };
 
 const useCanvasWorkingSize = create<{

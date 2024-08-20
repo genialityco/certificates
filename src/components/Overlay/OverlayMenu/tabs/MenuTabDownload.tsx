@@ -2,6 +2,7 @@ import { Button, Checkbox } from '@mantine/core';
 import React from 'react';
 import { FaDownload } from 'react-icons/fa';
 import styled from 'styled-components';
+import jsPDF from 'jspdf';
 
 import CanvasPreview from '~/components/CanvasPreview';
 import { CANVAS_PREVIEW_UNIQUE_ID } from '~/config/globalElementIds';
@@ -13,7 +14,7 @@ import generateUniqueId from '~/utils/generateUniqueId';
 import { H4 } from '../commonTabComponents';
 
 const DownloadButtonsGridDiv = styled.div`
-  display: inline-grid;
+  display: flex;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   grid-gap: 0.5rem;
   margin-bottom: 1rem;
@@ -27,14 +28,25 @@ export default function MenuTabDownload() {
   const canvasBackgroundColor = useCanvasBackgroundColor((state) => state.canvasBackgroundColor);
   const setCanvasBackgroundColor = useCanvasBackgroundColor((state) => state.setCanvasBackgroundColor);
 
-  const downloadCanvas = (type: 'png' | 'jpg') => {
+  const downloadCanvas = (type: 'png' | 'jpg' | 'pdf') => {
     const canvas = document.getElementById(CANVAS_PREVIEW_UNIQUE_ID) as HTMLCanvasElement;
-    const image = canvas.toDataURL();
-    const a = document.createElement('a');
-    a.download = `${generateUniqueId()}.${type}`;
-    a.href = image;
-    a.click();
-    a.remove();
+    const image = canvas.toDataURL('image/' + type);
+
+    if (type === 'pdf') {
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'px',
+        format: [canvas.width, canvas.height],
+      });
+      pdf.addImage(image, 'JPEG', 0, 0, canvas.width, canvas.height);
+      pdf.save(`${generateUniqueId()}.pdf`);
+    } else {
+      const a = document.createElement('a');
+      a.download = `${generateUniqueId()}.${type}`;
+      a.href = image;
+      a.click();
+      a.remove();
+    }
   };
 
   return (
@@ -60,6 +72,16 @@ export default function MenuTabDownload() {
           leftIcon={<FaDownload />}
         >
           JPG
+        </Button>
+        <Button
+          size="xs"
+          variant="default"
+          onClick={() => {
+            downloadCanvas('pdf');
+          }}
+          leftIcon={<FaDownload />}
+        >
+          PDF
         </Button>
       </DownloadButtonsGridDiv>
       <H4>

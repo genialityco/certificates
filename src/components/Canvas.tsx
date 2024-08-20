@@ -1,3 +1,4 @@
+import { Button } from '@mantine/core';
 import React, { useRef, type PointerEvent, type Touch, type TouchEvent } from 'react';
 import styled from 'styled-components';
 
@@ -20,6 +21,8 @@ import generateUniqueId from '~/utils/generateUniqueId';
 import getControlPoints from '~/utils/getControlPoints';
 import getCursorFromModes from '~/utils/getCursorFromModes';
 import getDimensionsFromFreeDraw from '~/utils/getDimensionsFromFreeDraw';
+import getDimensionsFromImage from '~/utils/getDimensionsFromImage';
+import getImageElementFromUrl from '~/utils/getImageElementFromUrl';
 import getRelativeMousePositionOnCanvas from '~/utils/getRelativeMousePositionOnCanvas';
 import isCursorWithinRectangle from '~/utils/isCursorWithinRectangle';
 
@@ -53,6 +56,7 @@ export default function Canvas() {
   const appendEllipseObject = useCanvasObjects((state) => state.appendEllipseObject);
   const appendFreeDrawObject = useCanvasObjects((state) => state.appendFreeDrawObject);
   const appendTextObject = useCanvasObjects((state) => state.appendTextObject);
+  const appendImageObject = useCanvasObjects((state) => state.appendImageObject);
   const updateCanvasObject = useCanvasObjects((state) => state.updateCanvasObject);
   const appendFreeDrawPointToCanvasObject = useCanvasObjects((state) => state.appendFreeDrawPointToCanvasObject);
   const moveCanvasObject = useCanvasObjects((state) => state.moveCanvasObject);
@@ -422,6 +426,82 @@ export default function Canvas() {
     }
   };
 
+  // Para insertar una imagen
+  const imageUrl = 'https://i.ibb.co/c6Yhnt5/CERTFICADOS-CONGRESO-PH.png';
+
+  const pushImageObject = async ({ imageElement }: OptionItem) => {
+    const createdObjectId = generateUniqueId();
+    appendImageObject({
+      id: createdObjectId,
+      x: 0,
+      y: 0,
+      width: 1920,
+      height: 1080,
+      opacity: 100,
+      imageUrl,
+      imageElement,
+    });
+    setActiveObjectId(createdObjectId);
+    setUserMode('select');
+  };
+
+  const commonPushImageObject = async (url: string) => {
+    const imageElement = await getImageElementFromUrl(url);
+    const dimensions = await getDimensionsFromImage({
+      context: contextRef?.current,
+      imageObject: { x: 0, y: 0, imageElement },
+    });
+    pushImageObject({ imageUrl: url, imageElement, dimensions });
+  };
+
+  const handleAppendText = async () => {
+    await commonPushImageObject(imageUrl);
+
+    const idCertificateName = generateUniqueId();
+    const certificateName = 'Juan Felipe Mosquera Lasso';
+    appendTextObject({
+      id: idCertificateName,
+      x: 356,
+      y: 339,
+      width: 1211,
+      height: 100,
+      text: certificateName,
+      textAlignHorizontal: 'center',
+      textAlignVertical: 'middle',
+      textJustify: false,
+      fontColorHex: '#000000',
+      fontSize: 44,
+      fontFamily: 'sans-serif',
+      fontStyle: 'normal',
+      fontWeight: 'normal',
+      fontVariant: 'normal',
+      fontLineHeightRatio: 1,
+      opacity: 100,
+    });
+
+    const idCertificateNumber = generateUniqueId();
+    const certificateNumber = '1003815193';
+    appendTextObject({
+      id: idCertificateNumber,
+      x: 669,
+      y: 471,
+      width: 582,
+      height: 100,
+      text: certificateNumber,
+      textAlignHorizontal: 'center',
+      textAlignVertical: 'middle',
+      textJustify: false,
+      fontColorHex: '#000000',
+      fontSize: 35,
+      fontFamily: 'sans-serif',
+      fontStyle: 'normal',
+      fontWeight: 'normal',
+      fontVariant: 'normal',
+      fontLineHeightRatio: 1,
+      opacity: 100,
+    });
+  };
+
   return (
     <FixedMain
       id={APP_FIXED_MAIN_UNIQUE_ID}
@@ -448,6 +528,16 @@ export default function Canvas() {
         width={windowSize.width}
         height={windowSize.height}
       />
+      <div>
+        <button
+          name="Add text"
+          value=""
+          style={{ position: 'fixed', bottom: '0', zIndex: 9999 }}
+          onClick={() => handleAppendText()}
+        >
+          Add text
+        </button>
+      </div>
       <div
         style={{
           position: 'absolute',

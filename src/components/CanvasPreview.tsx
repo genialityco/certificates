@@ -68,6 +68,8 @@ export default function CanvasPreview() {
       windowSize,
     });
 
+    console.log(canvas);
+
     setCanvasImageSrc(canvas.toDataURL());
   }, [
     actionMode,

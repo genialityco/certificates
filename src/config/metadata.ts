@@ -1,6 +1,6 @@
 import packageJson from '~/../package.json';
 
-const cleanUrl = 'flatdraw.pages.dev';
+const cleanUrl = 'localhost:3000';
 
 const metadata = {
   website: {
