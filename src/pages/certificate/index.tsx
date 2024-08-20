@@ -22,6 +22,7 @@ export default function Certificado() {
 
   const imageUrl = 'https://i.ibb.co/c6Yhnt5/CERTFICADOS-CONGRESO-PH.png';
 
+  /* eslint-disable @typescript-eslint/ban-ts-comment */
   // @ts-ignore
   const pushImageObject = async ({ imageElement }) => {
     const createdObjectId = generateUniqueId();
@@ -36,13 +37,15 @@ export default function Certificado() {
       imageElement,
     });
   };
-
+  /* eslint-disable @typescript-eslint/ban-ts-comment */
+  // @ts-ignore
   const commonPushImageObject = async (url) => {
     const imageElement = await getImageElementFromUrl(url);
     const dimensions = await getDimensionsFromImage({
       context: contextRef?.current,
       imageObject: { x: 0, y: 0, imageElement },
     });
+    /* eslint-disable @typescript-eslint/ban-ts-comment */
     // @ts-ignore
     pushImageObject({ imageUrl: url, imageElement, dimensions });
   };
@@ -58,6 +61,7 @@ export default function Certificado() {
       y: 339,
       width: 1211,
       height: 100,
+      /* eslint-disable @typescript-eslint/ban-ts-comment */
       // @ts-ignore
       text: certificateName.toUpperCase(),
       textAlignHorizontal: 'center',
@@ -81,6 +85,7 @@ export default function Certificado() {
       y: 471,
       width: 582,
       height: 100,
+      /* eslint-disable @typescript-eslint/ban-ts-comment */
       // @ts-ignore
       text: certificateNumber.replace(/\d(?=(?:\d{3})+$)/g, '$&.'),
       textAlignHorizontal: 'center',

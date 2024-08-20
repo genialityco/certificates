@@ -4,8 +4,10 @@ import React, { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 
 import { fetchEventUsersData } from '../api';
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
 const transformFilters = (filters) => {
+  /* eslint-disable @typescript-eslint/ban-ts-comment */
   // @ts-ignore
   return filters.map((filter) => ({
     field: filter.id,
