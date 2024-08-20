@@ -25,6 +25,8 @@ import getImageElementFromUrl from '~/utils/getImageElementFromUrl';
 import getRelativeMousePositionOnCanvas from '~/utils/getRelativeMousePositionOnCanvas';
 import isCursorWithinRectangle from '~/utils/isCursorWithinRectangle';
 
+import { OptionItem } from './Overlay/OverlaySidebar/controls/ImageControl/UnsplashImageButton';
+
 const FixedMain = styled.main`
   position: fixed;
   top: 0;
