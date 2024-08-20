@@ -14,7 +14,6 @@ const transformFilters = (filters) => {
 
 export default function Page() {
   const [inputValue, setInputValue] = useState('');
-  const [userData, setUserData] = useState(null);
   const router = useRouter();
 
   const handleSearch = async () => {
@@ -25,7 +24,6 @@ export default function Page() {
     if (data.data.length === 0) {
       alert('No existe certificado para este documento.');
     }
-    setUserData(user);
     if (user) {
       router.push(
         `/certificate?name=${encodeURIComponent(user.properties.names)}&documento=${encodeURIComponent(
