@@ -1,9 +1,9 @@
-import { ActionIcon, Box, Button, Card, Container, Group, Input, Text } from '@mantine/core';
+import { ActionIcon, Box, Card, Container, Group, Input, Text } from '@mantine/core';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
-import { useRouter } from 'next/router';
+
 import { fetchEventUsersData } from '../api';
-import fondoPh from '../Fondo.png';
 const transformFilters = (filters) => {
   return filters.map((filter) => ({
     field: filter.id,

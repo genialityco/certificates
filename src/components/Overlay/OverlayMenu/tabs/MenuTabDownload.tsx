@@ -1,8 +1,8 @@
 import { Button, Checkbox } from '@mantine/core';
+import jsPDF from 'jspdf';
 import React from 'react';
 import { FaDownload } from 'react-icons/fa';
 import styled from 'styled-components';
-import jsPDF from 'jspdf';
 
 import CanvasPreview from '~/components/CanvasPreview';
 import { CANVAS_PREVIEW_UNIQUE_ID } from '~/config/globalElementIds';

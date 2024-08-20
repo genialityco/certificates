@@ -1,15 +1,16 @@
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/router';
 import { Button } from '@mantine/core';
-import { FaDownload } from 'react-icons/fa';
 import jsPDF from 'jspdf';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
+import { FaDownload } from 'react-icons/fa';
+
 import CanvasPreview from '~/components/CanvasPreview';
 import { CANVAS_PREVIEW_UNIQUE_ID } from '~/config/globalElementIds';
-import getImageElementFromUrl from '~/utils/getImageElementFromUrl';
-import getDimensionsFromImage from '~/utils/getDimensionsFromImage';
-import generateUniqueId from '~/utils/generateUniqueId';
-import useCanvasObjects from '~/store/useCanvasObjects';
 import useCanvasContext from '~/context/useCanvasContext';
+import useCanvasObjects from '~/store/useCanvasObjects';
+import generateUniqueId from '~/utils/generateUniqueId';
+import getDimensionsFromImage from '~/utils/getDimensionsFromImage';
+import getImageElementFromUrl from '~/utils/getImageElementFromUrl';
 
 export default function Certificado() {
   const { contextRef } = useCanvasContext();

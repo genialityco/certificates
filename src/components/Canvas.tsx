@@ -1,4 +1,3 @@
-import { Button } from '@mantine/core';
 import React, { useRef, type PointerEvent, type Touch, type TouchEvent } from 'react';
 import styled from 'styled-components';
 
