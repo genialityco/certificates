@@ -4,7 +4,9 @@ import React, { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 
 import { fetchEventUsersData } from '../api';
+// @ts-ignore
 const transformFilters = (filters) => {
+  // @ts-ignore
   return filters.map((filter) => ({
     field: filter.id,
     value: filter.value,
