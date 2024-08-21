@@ -28,3 +28,8 @@ export const fetchEventProperties = async () => {
   });
   return response.data;
 };
+
+export const postEventUser = async (userData) => {
+  const response = await axiosInstance.post('/eventUsers/createUserAndAddtoEvent/66c50f374954890f9a07c832/', userData);
+  return response.data;
+};

@@ -1,8 +1,8 @@
-import { Table, Pagination, Group, Box, Select, TextInput, Button, Grid, Col } from '@mantine/core';
+import { Table, Pagination, Group, Box, Select, TextInput, Button, Grid, Col, Modal } from '@mantine/core';
 import React, { useState, useEffect } from 'react';
 
 import '../styles.module.css';
-import { fetchEventProperties, fetchEventUsersData } from '~/api';
+import { fetchEventProperties, fetchEventUsersData, postEventUser } from '~/api';
 
 interface EventProperty {
   label: string;
@@ -24,33 +24,35 @@ const DataTable: React.FC = () => {
   const [propertyHeadersApi, setPropertyHeadersApi] = useState<EventProperty[]>([]);
   const [filters] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState<string>('');
+  const [modalOpened, setModalOpened] = useState(false);
+  const [newUserData, setNewUserData] = useState<{ [key: string]: string }>({});
 
   useEffect(() => {
-    const getEventUsersData = async () => {
-      const response = await fetchEventUsersData();
-      const result = await response;
-      setAllData(result.data);
-      updateDisplayedData(result.data, page, perPage, filters);
-    };
+    getEventProperties();
+  }, []);
 
+  useEffect(() => {
     getEventUsersData();
   }, [page, perPage, filters]);
 
-  useEffect(() => {
-    const getEventProperties = async () => {
-      try {
-        const response = await fetchEventProperties();
-        const result = await response;
-        if (result) {
-          filterHeadTable(result);
-        }
-      } catch (error) {
-        console.error('Error fetching event properties:', error);
-      }
-    };
+  const getEventUsersData = async () => {
+    const response = await fetchEventUsersData();
+    const result = await response;
+    setAllData(result.data);
+    updateDisplayedData(result.data, page, perPage, filters);
+  };
 
-    getEventProperties();
-  }, []);
+  const getEventProperties = async () => {
+    try {
+      const response = await fetchEventProperties();
+      const result = await response;
+      if (result) {
+        filterHeadTable(result);
+      }
+    } catch (error) {
+      console.error('Error fetching event properties:', error);
+    }
+  };
 
   useEffect(() => {
     updateDisplayedData(allData, page, perPage, filters);
@@ -94,17 +96,39 @@ const DataTable: React.FC = () => {
     setSearchTerm(event.currentTarget.value);
   };
 
+  const handleAddUser = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      await postEventUser(newUserData);
+      getEventUsersData();
+      setModalOpened(false);
+    } catch (error) {
+      console.error('Error adding user:', error);
+    }
+  };
+
+  const handleInputChange = (name: string, value: string) => {
+    setNewUserData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
   return (
-    <Box p="sm">
-      <Grid align="center" gutter="sm">
-        <Col span={12} md={9}>
-          <TextInput placeholder="Buscar usuario" value={searchTerm} onChange={handleSearchChange} sx={{ width: '100%' }} />
-        </Col>
-        <Col span={12} md={3}>
-          <Button fullWidth>Añadir</Button>
-        </Col>
-      </Grid>
-      <Box sx={{ overflowX: 'auto', minWidth: 500, marginTop: '1rem' }}>
+    <>
+      <Box>
+        <Grid align="center" gutter="sm">
+          <Col span={12} md={9}>
+            <TextInput placeholder="Buscar usuario" value={searchTerm} onChange={handleSearchChange} sx={{ width: '100%' }} />
+          </Col>
+          <Col span={12} md={3}>
+            <Button fullWidth onClick={() => setModalOpened(true)}>
+              Añadir
+            </Button>
+          </Col>
+        </Grid>
+      </Box>
+      <Box sx={{ overflowX: 'auto', minWidth: '100%', marginTop: '1rem' }}>
         <Table c="white" highlightOnHover withBorder withColumnBorders>
           <thead>
             <tr>
@@ -126,16 +150,34 @@ const DataTable: React.FC = () => {
           </tbody>
         </Table>
       </Box>
-      <Group mt="md" position="apart" grow>
+      <Group mt="md" position="apart" grow align="center">
         <Pagination value={page} onChange={setPage} total={Math.ceil(allData.length / perPage)} />
         <Select
           value={perPage.toString()}
           onChange={handlePerPageChange}
           data={['10', '20', '50', '100']}
           placeholder="Items per page"
+          sx={{ width: '100%' }}
         />
       </Group>
-    </Box>
+
+      <Modal opened={modalOpened} onClose={() => setModalOpened(false)} title="Añadir Usuario">
+        <form onSubmit={handleAddUser}>
+          {propertyHeadersApi.map((header) => (
+            <TextInput
+              key={header.name}
+              label={header.label}
+              value={newUserData[header.name] || ''}
+              onChange={(e) => handleInputChange(header.name, e.target.value)}
+              required
+            />
+          ))}
+          <Group position="right" mt="md">
+            <Button type="submit">Guardar</Button>
+          </Group>
+        </form>
+      </Modal>
+    </>
   );
 };
 
