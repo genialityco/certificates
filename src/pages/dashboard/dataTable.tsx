@@ -4,12 +4,24 @@ import React, { useState, useEffect } from 'react';
 import '../styles.module.css';
 import { fetchEventProperties, fetchEventUsersData } from '~/api';
 
+interface EventProperty {
+  label: string;
+  name: string;
+}
+
+interface EventUser {
+  _id: string;
+  properties: {
+    [key: string]: any;
+  };
+}
+
 const DataTable: React.FC = () => {
-  const [allData, setAllData] = useState([]);
-  const [displayedData, setDisplayedData] = useState([]);
-  const [page, setPage] = useState(1);
-  const [perPage, setPerPage] = useState(10);
-  const [propertyHeadersApi, setPropertyHeadersApi] = useState<{ label: string; name: string }[]>([]);
+  const [allData, setAllData] = useState<EventUser[]>([]);
+  const [displayedData, setDisplayedData] = useState<EventUser[]>([]);
+  const [page, setPage] = useState<number>(1);
+  const [perPage, setPerPage] = useState<number>(10);
+  const [propertyHeadersApi, setPropertyHeadersApi] = useState<EventProperty[]>([]);
   const [filters, setFilters] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState<string>('');
 
@@ -50,11 +62,14 @@ const DataTable: React.FC = () => {
       return;
     }
 
-    const headers = userProperties.map((property: unknown) => ({ label: property.label, name: property.name }));
+    const headers = (userProperties as EventProperty[]).map((property) => ({
+      label: property.label,
+      name: property.name,
+    }));
     setPropertyHeadersApi(headers);
   };
 
-  const updateDisplayedData = (data: unknown, page: number, perPage: number, filters: { [key: string]: string }) => {
+  const updateDisplayedData = (data: EventUser[], page: number, perPage: number, filters: { [key: string]: string }) => {
     const filteredData = data
       .filter((item) => Object.keys(filters).every((key) => item.properties[key]?.toString().includes(filters[key])))
       .filter((item) =>
