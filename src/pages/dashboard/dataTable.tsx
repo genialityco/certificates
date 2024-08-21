@@ -50,11 +50,11 @@ const DataTable: React.FC = () => {
       return;
     }
 
-    const headers = userProperties.map((property: any) => ({ label: property.label, name: property.name }));
+    const headers = userProperties.map((property: unknown) => ({ label: property.label, name: property.name }));
     setPropertyHeadersApi(headers);
   };
 
-  const updateDisplayedData = (data: any, page: number, perPage: number, filters: { [key: string]: string }) => {
+  const updateDisplayedData = (data: unknown, page: number, perPage: number, filters: { [key: string]: string }) => {
     const filteredData = data
       .filter((item) => Object.keys(filters).every((key) => item.properties[key]?.toString().includes(filters[key])))
       .filter((item) =>

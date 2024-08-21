@@ -1,4 +1,5 @@
 import React from 'react';
+
 import DataTable from './dataTable';
 export default function dashboard() {
   return (
