@@ -19,3 +19,12 @@ export const fetchEventUsersData = async (page, pageSize, filters) => {
   });
   return response.data;
 };
+
+export const fetchEventProperties = async () => {
+  const response = await axiosInstance.get('/events/66c50f374954890f9a07c832/userproperties', {
+    params: {
+      token: TOKEN,
+    },
+  });
+  return response.data;
+};

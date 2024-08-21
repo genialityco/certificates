@@ -1,4 +1,5 @@
 import React from 'react';
+import DataTable from './dataTable';
 export default function dashboard() {
   return (
     <div
@@ -12,6 +13,7 @@ export default function dashboard() {
       }}
     >
       <h1 style={{ color: 'white', marginTop: '50px' }}>Usuarios habilitados</h1>
+      <DataTable />
     </div>
   );
 }
