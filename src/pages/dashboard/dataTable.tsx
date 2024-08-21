@@ -119,7 +119,7 @@ const DataTable: React.FC = () => {
             {displayedData.map((item) => (
               <tr key={item._id}>
                 {propertyHeadersApi.map((header) => (
-                  <td key={header.name}>{item.properties[header.name]}</td>
+                  <td key={header.name}>{String(item.properties[header.name])}</td>
                 ))}
               </tr>
             ))}
