@@ -12,7 +12,7 @@ interface EventProperty {
 interface EventUser {
   _id: string;
   properties: {
-    [key: string]: any;
+    [key: string]: unknown;
   };
 }
 
@@ -22,7 +22,7 @@ const DataTable: React.FC = () => {
   const [page, setPage] = useState<number>(1);
   const [perPage, setPerPage] = useState<number>(10);
   const [propertyHeadersApi, setPropertyHeadersApi] = useState<EventProperty[]>([]);
-  const [filters, setFilters] = useState<{ [key: string]: string }>({});
+  const [filters] = useState<{ [key: string]: string }>({});
   const [searchTerm, setSearchTerm] = useState<string>('');
 
   useEffect(() => {
@@ -56,7 +56,7 @@ const DataTable: React.FC = () => {
     updateDisplayedData(allData, page, perPage, filters);
   }, [page, perPage, filters, allData, searchTerm]);
 
-  const filterHeadTable = (userProperties: unknown) => {
+  const filterHeadTable = (userProperties: EventProperty[]) => {
     if (!userProperties || !Array.isArray(userProperties)) {
       console.error('userProperties is undefined or not an array:', userProperties);
       return;
