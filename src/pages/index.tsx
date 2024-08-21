@@ -45,16 +45,17 @@ export default function Page() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        background: 'url(https://i.ibb.co/v3PX5Kz/Fondo.png)',
+        background: 'url(https://i.ibb.co/v3PX5Kz/Fondo.png) no-repeat center center',
         backgroundSize: 'contain',
       }}
+      fluid
     >
       <Box px="xl" py="lg">
-        {/* <Group position="center">
-          <Text size="xl" color="blue" mt="lg">
+        <Group position="center">
+          <Text size="xl" color="white" mt="lg">
             ¡Bienvenido! Consulta y descarga tu certificado
           </Text>
-        </Group> */}
+        </Group>
 
         <Card withBorder shadow="sm" mt="xl" padding="lg">
           <Text size="md" mb="md" align="center" weight={500}>

@@ -4,8 +4,8 @@ const cleanUrl = 'localhost:3000';
 
 const metadata = {
   website: {
-    name: 'Flatdraw',
-    slogan: 'Simple Canvas Drawing App',
+    name: 'Certificados',
+    slogan: 'Generar certificados',
     description: 'Open-source canvas drawing web application, built with TypeScript, React, and Next.js.',
     cleanUrl,
     url: `https://${cleanUrl}`,
