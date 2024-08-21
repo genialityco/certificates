@@ -15,7 +15,7 @@
     "prettier:format": "prettier --write .",
     "check": "npm run eslint:lint && npm run prettier:format",
     "dev": "concurrently \"npm run next:dev\" \"npm run functions:dev\"",
-    "build": "next build",
+    "build": "npm run next:build && npm run next:export",
     "preview": "npm run build && npm run functions:dev"
   },
   "dependencies": {
