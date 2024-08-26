@@ -198,7 +198,7 @@ const DataTable: React.FC = () => {
   };
 
   return (
-    <div align="center" style={{ width: '100%', height: '90vh' }}>
+    <div style={{ width: '100%', height: '90vh' }}>
       {loading ? (
         <Loader size="xl" />
       ) : (

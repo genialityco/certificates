@@ -170,10 +170,10 @@ export default function ImageControl({ pageSize = 60 }: Props) {
           </Dropzone.Idle>
 
           <div>
-            <Text size="lg" inline align="center" style={{ opacity: 0.8 }}>
+            <Text size="lg" inline style={{ opacity: 0.8 }}>
               Drag an image here or click to select a file
             </Text>
-            <Text size="sm" inline mt={7} p={3} align="center" style={{ opacity: 0.8 }}>
+            <Text size="sm" inline mt={7} p={3} style={{ opacity: 0.8 }}>
               File should not exceed 5 MB
             </Text>
           </div>
