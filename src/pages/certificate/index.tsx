@@ -188,6 +188,7 @@ export default function Certificado() {
           width: '100%',
           maxWidth: '80%',
           margin: '0 auto',
+          paddingBottom: '15px',
         }}
       >
         <CanvasPreview />

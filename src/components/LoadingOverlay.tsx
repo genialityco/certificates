@@ -1,4 +1,4 @@
-import { Loader } from '@mantine/core';
+import { Loader, Text } from '@mantine/core';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -19,15 +19,16 @@ const Div = styled.div`
   justify-content: center;
 `;
 
-const LogoImg = styled.img`
-  width: 120px;
-  margin-bottom: 1.5rem;
-`;
+// const LogoImg = styled.img`
+//   width: 120px;
+//   margin-bottom: 1.5rem;
+// `;
 
 export default function LoadingOverlay() {
   return (
     <Div>
-      <LogoImg src="/images/logo/logo-dark.png" alt={`${metadata.website.name} logo`} />
+      {/* <LogoImg src="/images/logo/logo-dark.png" alt={`${metadata.website.name} logo`} /> */}
+      <Text c="white">Gen Certificados</Text>
       <div>
         <Loader />
       </div>

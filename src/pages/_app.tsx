@@ -41,7 +41,22 @@ function RouterTransition() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.asPath]);
 
-  return <NavigationProgress />;
+  return (
+    <NavigationProgress
+      initialProgress={10}
+      color="blue"
+      size={4}
+      zIndex={10000}
+      withinPortal={true}
+      portalProps={{}}
+      style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+      }}
+    />
+  );
 }
 
 export default function App({ Component, pageProps, router }: AppProps) {
