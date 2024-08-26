@@ -1,9 +1,10 @@
-import type { ColorScheme } from '@mantine/core';
 import { parseCookies, setCookie } from 'nookies';
 
 import { CookieTypes } from '~/config/cookieTypes';
 import { DEFAULT_COLOR_SCHEME } from '~/config/settings';
 import generateUniqueId from '~/utils/generateUniqueId';
+
+type ColorScheme = 'light' | 'dark' | 'auto';
 
 const randomDeviceHash = generateUniqueId();
 

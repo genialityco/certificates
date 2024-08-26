@@ -1,4 +1,4 @@
-import type { ColorScheme } from '@mantine/core';
+type ColorScheme = 'light' | 'dark';
 
 const colors = {
   htmlBackground: {
