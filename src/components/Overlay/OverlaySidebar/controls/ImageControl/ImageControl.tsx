@@ -129,7 +129,7 @@ export default function ImageControl({ pageSize = 60 }: Props) {
   return (
     <>
       <Dropzone
-        sx={{ marginBottom: '1rem' }}
+        mb="sm"
         accept={IMAGE_MIME_TYPE}
         maxSize={5000000} // 5 mb?
         maxFiles={1}
@@ -158,7 +158,7 @@ export default function ImageControl({ pageSize = 60 }: Props) {
           });
         }}
       >
-        <Group position="center" spacing="xs" style={{ pointerEvents: 'none' }}>
+        <Group justify="center" p="xs" style={{ pointerEvents: 'none' }}>
           <Dropzone.Accept>
             <FaUpload size="3.2rem" style={{ opacity: 0.35 }} />
           </Dropzone.Accept>
@@ -200,7 +200,7 @@ export default function ImageControl({ pageSize = 60 }: Props) {
           onChange={(event) => {
             setImageUrl(event.currentTarget.value);
           }}
-          sx={{ marginBottom: 10 }}
+          mb="md"
           disabled={isLoading}
         />
         <Tooltip label="Add">

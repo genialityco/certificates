@@ -87,7 +87,7 @@ export default function UnsplashImageButton({ image, pushImageObject }: Props) {
           Object.entries(imageMenuOptions).map(([key, imageOption]) => (
             <Menu.Item
               key={key}
-              icon={<MdDownload size={14} />}
+              leftSection={<MdDownload size={14} />}
               onClick={() => {
                 pushImageObject(imageOption);
               }}
@@ -98,8 +98,8 @@ export default function UnsplashImageButton({ image, pushImageObject }: Props) {
         )}
         <Menu.Divider />
         <Menu.Item
-          sx={{ opacity: 0.75 }}
-          icon={<BiUser size={14} />}
+          style={{ opacity: 0.75 }}
+          leftSection={<BiUser size={14} />}
           onClick={() => {
             if (image.author.url) {
               window.open(image.author.url, '_blank');
@@ -109,7 +109,7 @@ export default function UnsplashImageButton({ image, pushImageObject }: Props) {
           Photo by {image.author.name} on Unsplash
         </Menu.Item>
         <Menu.Divider />
-        <Menu.Item icon={<CgClose size={14} />} color="red">
+        <Menu.Item leftSection={<CgClose size={14} />} color="red">
           Close
         </Menu.Item>
       </Menu.Dropdown>
