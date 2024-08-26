@@ -1,3 +1,3 @@
-import type { ColorScheme } from '@mantine/core';
+type ColorScheme = 'light' | 'dark';
 
 export const DEFAULT_COLOR_SCHEME: ColorScheme = 'light';
