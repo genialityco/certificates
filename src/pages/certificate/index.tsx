@@ -155,7 +155,7 @@ export default function Certificado() {
           onClick={() => {
             downloadCanvas('png');
           }}
-          leftIcon={<FaDownload />}
+          leftSection={<FaDownload />}
         >
           PNG
         </Button>
@@ -165,7 +165,7 @@ export default function Certificado() {
           onClick={() => {
             downloadCanvas('jpg');
           }}
-          leftIcon={<FaDownload />}
+          leftSection={<FaDownload />}
         >
           JPG
         </Button>
@@ -175,7 +175,7 @@ export default function Certificado() {
           onClick={() => {
             downloadCanvas('pdf');
           }}
-          leftIcon={<FaDownload />}
+          leftSection={<FaDownload />}
         >
           PDF
         </Button>
