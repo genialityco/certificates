@@ -21,8 +21,7 @@ const Nav = styled.div`
 const Div = styled.div`
   pointer-events: auto;
   background: var(--color-bgPrimary);
-  border-radius: 0.25rem;
-  padding: 0.3rem;
+  border-radius: 0.2rem;
   overflow: hidden;
   display: flex;
   align-items: center;
@@ -111,8 +110,8 @@ export default function OverlayNavbar() {
                 offset={16}
               >
                 <ActionIcon
-                  color="dark"
-                  variant={isActive ? 'gradient' : 'dark'}
+                  variant={isActive ? 'filled' : 'white'}
+                  color={isActive ? 'blue' : 'dark'}
                   size="lg"
                   onClick={() => {
                     setUserMode(mode);

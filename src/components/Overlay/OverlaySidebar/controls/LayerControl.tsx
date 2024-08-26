@@ -39,7 +39,7 @@ export default function LayerControl() {
           <Button
             title="Send backward"
             disabled={canvasObjects.findIndex((object) => object.id === activeObject.id) === 0}
-            leftIcon={<MdFlipToBack />}
+            leftSection={<MdFlipToBack />}
             variant="default"
             size="xs"
             onClick={() => {
@@ -53,7 +53,7 @@ export default function LayerControl() {
           <Button
             title="Bring forward"
             disabled={canvasObjects.findIndex((object) => object.id === activeObject.id) === canvasObjects.length - 1}
-            leftIcon={<MdFlipToFront />}
+            leftSection={<MdFlipToFront />}
             variant="default"
             size="xs"
             onClick={() => {

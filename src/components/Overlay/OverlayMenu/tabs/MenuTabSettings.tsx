@@ -26,14 +26,13 @@ export default function MenuTabSettings() {
         onClick={() => {
           toggleColorScheme();
         }}
-        rightIcon={colorScheme === 'light' ? <FaMoon /> : <FaSun />}
+        rightSection={colorScheme === 'light' ? <FaMoon /> : <FaSun />}
       >
         Switch
       </Button>
       <H4 style={{ marginTop: '1.5rem' }}>Color Picker</H4>
       <TextP style={{ marginBottom: '0.6rem' }}> Choose the default color picker style.</TextP>
       <NativeSelect
-        sx={{ marginBottom: '1rem' }}
         key={`color-picker-select-${defaultParams.activeColorPicker}`}
         size="xs"
         data={COLOR_PICKERS.map((colorPicker) => ({

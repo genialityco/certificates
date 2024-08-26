@@ -26,42 +26,46 @@ export default function FrameControl() {
   const frameOptions: {
     label: string;
     value: number;
-    onChange: (value: number) => void;
+    onChange: (value: string | number) => void;
   }[] = activeObject
     ? [
         {
           label: 'X',
           value: activeObject.x,
-          onChange: (value: number) => {
-            if (Number.isFinite(value)) {
-              updateCanvasObject(activeObject.id, { x: value });
+          onChange: (value: string | number) => {
+            const numericValue = Number(value);
+            if (Number.isFinite(numericValue)) {
+              updateCanvasObject(activeObject.id, { x: numericValue });
             }
           },
         },
         {
           label: 'Y',
           value: activeObject.y,
-          onChange: (value: number) => {
-            if (Number.isFinite(value)) {
-              updateCanvasObject(activeObject.id, { y: value });
+          onChange: (value: string | number) => {
+            const numericValue = Number(value);
+            if (Number.isFinite(numericValue)) {
+              updateCanvasObject(activeObject.id, { y: numericValue });
             }
           },
         },
         {
           label: 'W',
           value: activeObject.width,
-          onChange: (value: number) => {
-            if (Number.isFinite(value)) {
-              updateCanvasObject(activeObject.id, { width: value });
+          onChange: (value: string | number) => {
+            const numericValue = Number(value);
+            if (Number.isFinite(numericValue)) {
+              updateCanvasObject(activeObject.id, { width: numericValue });
             }
           },
         },
         {
           label: 'H',
           value: activeObject.height,
-          onChange: (value: number) => {
-            if (Number.isFinite(value)) {
-              updateCanvasObject(activeObject.id, { height: value });
+          onChange: (value: string | number) => {
+            const numericValue = Number(value);
+            if (Number.isFinite(numericValue)) {
+              updateCanvasObject(activeObject.id, { height: numericValue });
             }
           },
         },
@@ -79,7 +83,7 @@ export default function FrameControl() {
             style={{ width: '100%' }}
             value={Math.trunc(value)}
             onChange={onChange}
-            icon={<span style={{ fontSize: '12px' }}>{label}</span>}
+            leftSection={<span style={{ fontSize: '12px' }}>{label}</span>}
             hideControls
           />
         ))}

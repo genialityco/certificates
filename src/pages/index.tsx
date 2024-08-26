@@ -51,14 +51,14 @@ export default function Page() {
       fluid
     >
       <Box px="xl" py="lg">
-        <Group position="center">
-          <Text size="xl" color="white" mt="lg">
+        <Group justify="center">
+          <Text size="xl" c="white" mt="lg">
             ¡Bienvenido! Consulta y descarga tu certificado
           </Text>
         </Group>
 
         <Card withBorder shadow="sm" mt="xl" padding="lg">
-          <Text size="md" mb="md" align="center" weight={500}>
+          <Text size="md" mb="md">
             Para consultar ingresa tu número de documento
           </Text>
           <Group>

@@ -59,7 +59,7 @@ export default function MenuTabDownload() {
           onClick={() => {
             downloadCanvas('png');
           }}
-          leftIcon={<FaDownload />}
+          leftSection={<FaDownload />}
         >
           PNG
         </Button>
@@ -69,7 +69,7 @@ export default function MenuTabDownload() {
           onClick={() => {
             downloadCanvas('jpg');
           }}
-          leftIcon={<FaDownload />}
+          leftSection={<FaDownload />}
         >
           JPG
         </Button>
@@ -79,7 +79,7 @@ export default function MenuTabDownload() {
           onClick={() => {
             downloadCanvas('pdf');
           }}
-          leftIcon={<FaDownload />}
+          leftSection={<FaDownload />}
         >
           PDF
         </Button>
@@ -89,7 +89,6 @@ export default function MenuTabDownload() {
       </H4>
       <CanvasPreview />
       <Checkbox
-        sx={{ marginTop: '1rem' }}
         size="sm"
         label="Transparent Background"
         checked={canvasBackgroundColor === 'transparent'}

@@ -1,4 +1,4 @@
-import { MantineProvider, ColorSchemeProvider, type ColorScheme } from '@mantine/core';
+import { MantineProvider } from '@mantine/core';
 import { ModalsProvider } from '@mantine/modals';
 import { Notifications } from '@mantine/notifications';
 import { NavigationProgress, nprogress } from '@mantine/nprogress';
@@ -7,13 +7,13 @@ import NextHead from 'next/head';
 import { useRouter } from 'next/router';
 import { GoogleAnalytics } from 'nextjs-google-analytics';
 import React, { useEffect, useState } from 'react';
+import '@mantine/core/styles.css';
 
 import '~/theme/styles/global.css';
 import LoadingOverlay from '~/components/LoadingOverlay';
 import metadata from '~/config/metadata';
 import { DEFAULT_COLOR_SCHEME } from '~/config/settings';
 import { CanvasContextProvider } from '~/context/useCanvasContext/useCanvasContext';
-import { ColorSchemeContextProvider } from '~/context/useColorSchemeContext';
 import { ModalContextProvider } from '~/context/useModalContext';
 import useCookies from '~/hooks/useCookies';
 import useAvailableFonts from '~/store/useAvailableFonts';
@@ -41,18 +41,17 @@ function RouterTransition() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [router.asPath]);
 
-  return <NavigationProgress autoReset={true} progressLabel="Loading page" />;
+  return <NavigationProgress />;
 }
 
 export default function App({ Component, pageProps, router }: AppProps) {
   const { getDeviceHash, setDeviceHash, getSavedColoScheme, setSavedColoScheme } = useCookies();
-
   const setAvailableFonts = useAvailableFonts((state) => state.setAvailableFonts);
 
   const [hasAppLoaded, setHasAppLoaded] = useState<boolean>(false);
-  const [colorScheme, setColorScheme] = useState<ColorScheme>(DEFAULT_COLOR_SCHEME);
+  const [colorScheme, setColorScheme] = useState<'light' | 'dark'>(DEFAULT_COLOR_SCHEME);
 
-  const toggleColorScheme = (value?: ColorScheme) => {
+  const toggleColorScheme = (value?: 'light' | 'dark') => {
     const nextColorScheme = value || (colorScheme === 'dark' ? 'light' : 'dark');
     setColorScheme(nextColorScheme);
     setSavedColoScheme(nextColorScheme);
@@ -63,8 +62,6 @@ export default function App({ Component, pageProps, router }: AppProps) {
       body.style.background = colors.htmlBackground[nextColorScheme];
     }
   };
-
-  // On app load
 
   useEffect(() => {
     // Initialize color scheme
@@ -136,22 +133,18 @@ export default function App({ Component, pageProps, router }: AppProps) {
         <meta name="twitter:creator" content={`@${metadata.social.twitter}`} />
       </NextHead>
       <GlobalStyle />
-      <ColorSchemeProvider colorScheme={colorScheme} toggleColorScheme={toggleColorScheme}>
-        <ColorSchemeContextProvider>
-          <CanvasContextProvider>
-            <MantineProvider theme={{ colorScheme }} withNormalizeCSS withGlobalStyles>
-              <ModalsProvider>
-                <ModalContextProvider>
-                  {!hasAppLoaded && <LoadingOverlay />}
-                  <RouterTransition />
-                  <Notifications position="top-right" zIndex={theme.layers.notifications} />
-                  <Component {...pageProps} />
-                </ModalContextProvider>
-              </ModalsProvider>
-            </MantineProvider>
-          </CanvasContextProvider>
-        </ColorSchemeContextProvider>
-      </ColorSchemeProvider>
+      <MantineProvider>
+        <CanvasContextProvider>
+          <ModalsProvider>
+            <ModalContextProvider>
+              {!hasAppLoaded && <LoadingOverlay />}
+              <RouterTransition />
+              <Notifications position="top-right" zIndex={theme.layers.notifications} />
+              <Component {...pageProps} />
+            </ModalContextProvider>
+          </ModalsProvider>
+        </CanvasContextProvider>
+      </MantineProvider>
       <GoogleAnalytics
         gaMeasurementId={metadata.services.googleAnalyticsMeasurementId}
         strategy="afterInteractive"

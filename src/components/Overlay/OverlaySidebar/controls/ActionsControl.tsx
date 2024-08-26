@@ -40,7 +40,7 @@ export default function ActionsControl() {
       <ActionsUl>
         <li>
           <Button
-            leftIcon={<MdControlPointDuplicate />}
+            leftSection={<MdControlPointDuplicate />}
             variant="default"
             size="xs"
             onClick={() => {
@@ -71,7 +71,7 @@ export default function ActionsControl() {
         </li>
         <li>
           <Button
-            leftIcon={<MdOutlineDelete />}
+            leftSection={<MdOutlineDelete />}
             variant="default"
             size="xs"
             onClick={() => {

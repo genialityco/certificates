@@ -38,7 +38,7 @@ export default function OverlayZoom() {
       <li>
         <Tooltip position="top" label="Reset position" offset={8}>
           <ActionIcon
-            size="xl"
+            size="lg"
             variant="default"
             onClick={() => {
               setCenter();
@@ -51,7 +51,7 @@ export default function OverlayZoom() {
       <li>
         <Tooltip position="top" label="Decrement zoom" offset={8}>
           <ActionIcon
-            size="xl"
+            size="lg"
             variant="default"
             onClick={() => {
               decrementZoom(5);
@@ -64,8 +64,7 @@ export default function OverlayZoom() {
       <li>
         <Tooltip position="top" label="Set default zoom" offset={8}>
           <ActionIcon
-            sx={{ width: '70px' }}
-            size="xl"
+            size="lg"
             variant="default"
             onClick={() => {
               setCenter();
@@ -78,7 +77,7 @@ export default function OverlayZoom() {
       <li>
         <Tooltip position="top" label="Increment zoom" offset={8}>
           <ActionIcon
-            size="xl"
+            size="lg"
             variant="default"
             onClick={() => {
               incrementZoom(5);

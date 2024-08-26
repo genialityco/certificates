@@ -73,7 +73,7 @@ const GridDiv = styled.div`
   pointer-events: auto;
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  margin: 10px 0;
+  margin: 5px 0;
   border: 0.0625rem solid var(--color-borderPrimary);
   border-radius: 0.25rem;
 `;
@@ -118,7 +118,7 @@ export default function IconControl({ pageSize = 60 }: Props) {
             searchQueryIcons: event.currentTarget.value,
           });
         }}
-        icon={<cgIcons.CgSearch size={12} style={{ transform: 'translateY(1px)' }} />}
+        leftSection={<cgIcons.CgSearch size={12} style={{ transform: 'translateY(1px)' }} />}
       />
       {iconEntriesToRender.length > 0 ? (
         <>
@@ -126,8 +126,8 @@ export default function IconControl({ pageSize = 60 }: Props) {
             {iconEntriesToRender.map(([key, Icon]) => (
               <Tooltip key={key} position="bottom" withArrow label={key}>
                 <ActionIcon
-                  sx={{ width: '100%' }}
-                  size="xl"
+                  size="lg"
+                  m="xs"
                   onClick={() => {
                     const svgPath =
                       Icon({}).props.children[0].props.d ||
@@ -153,14 +153,14 @@ export default function IconControl({ pageSize = 60 }: Props) {
                     setUserMode('select');
                   }}
                 >
-                  <Icon style={{ width: '60%', height: '60%' }} />
+                  <Icon style={{ width: '70%', height: '70%' }} />
                 </ActionIcon>
               </Tooltip>
             ))}
           </GridDiv>
           {hasMore && (
             <Button
-              leftIcon={<aiIcons.AiOutlineDown style={{ transform: 'translateY(1px)' }} />}
+              leftSection={<aiIcons.AiOutlineDown style={{ transform: 'translateY(1px)' }} />}
               variant="default"
               size="xs"
               onClick={() => {
@@ -175,7 +175,7 @@ export default function IconControl({ pageSize = 60 }: Props) {
         <>
           <p style={{ fontSize: '0.95rem', marginTop: '0.5rem', marginBottom: '0.6rem' }}>No results found.</p>
           <Button
-            leftIcon={<cgIcons.CgClose />}
+            leftSection={<cgIcons.CgClose />}
             variant="default"
             size="xs"
             onClick={() => {

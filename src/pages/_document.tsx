@@ -32,6 +32,10 @@ export default class Document extends NextDocument {
       };
     } catch (error) {
       console.error(error);
+      return {
+        styles: sheet.getStyleElement(),
+        html: '', // Asegúrate de devolver al menos una cadena vacía en caso de error
+      };
     } finally {
       sheet.seal();
     }

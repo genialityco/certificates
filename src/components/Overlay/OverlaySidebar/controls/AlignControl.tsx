@@ -159,13 +159,7 @@ export default function AlignControl() {
       <AlignGridDiv>
         {objectAlignOptions.map(({ label, icon, onClick, isActive }) => (
           <Tooltip key={label} position="top" label={label}>
-            <ActionIcon
-              sx={{ width: '100%' }}
-              size="md"
-              variant={isActive ? 'outline' : 'default'}
-              color="dark"
-              onClick={onClick}
-            >
+            <ActionIcon size="md" variant={isActive ? 'outline' : 'default'} color="dark" onClick={onClick}>
               {icon}
             </ActionIcon>
           </Tooltip>

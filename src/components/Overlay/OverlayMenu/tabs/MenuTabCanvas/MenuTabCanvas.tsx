@@ -1,4 +1,4 @@
-import { Button, Checkbox, NumberInput, Select } from '@mantine/core';
+import { Button, Checkbox, ComboboxItem, NumberInput, OptionsFilter, Select } from '@mantine/core';
 import React from 'react';
 import { RxHeight, RxWidth } from 'react-icons/rx';
 import { TbTrashX } from 'react-icons/tb';
@@ -61,6 +61,14 @@ export default function MenuTabCanvas({ closeModal }: Props) {
   const canvasBackgroundColor = useCanvasBackgroundColor((state) => state.canvasBackgroundColor);
   const setCanvasBackgroundColor = useCanvasBackgroundColor((state) => state.setCanvasBackgroundColor);
 
+  const optionsFilter: OptionsFilter = ({ options, search }) => {
+    const splittedSearch = search.toLowerCase().trim().split(' ');
+    return (options as ComboboxItem[]).filter((option) => {
+      const words = option.label.toLowerCase().trim().split(' ');
+      return splittedSearch.every((searchWord) => words.some((word) => word.includes(searchWord)));
+    });
+  };
+
   return (
     <>
       <H4>Canvas Size</H4>
@@ -108,13 +116,13 @@ export default function MenuTabCanvas({ closeModal }: Props) {
           size="sm"
           label="Presets"
           placeholder="Search presets"
-          itemComponent={SizePresetSelectItem}
+          renderOption={SizePresetSelectItem}
           data={data}
           searchable
           value={defaultParams.sizePreset}
           maxDropdownHeight={400}
-          nothingFound="No results found"
-          filter={(value, item) => !!item.label?.toLowerCase().includes(value.toLowerCase().trim())}
+          // nothingFound="No results found"
+          filter={optionsFilter}
           onChange={(value) => {
             const sizePresetData = getSizePresetDataFromSlug(value);
             if (sizePresetData) {
