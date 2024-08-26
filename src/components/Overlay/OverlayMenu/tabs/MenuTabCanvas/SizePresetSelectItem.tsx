@@ -59,7 +59,7 @@ type Props = SizePresetOption & ComponentPropsWithoutRef<'div'>;
 
 const SizePresetSelectItem = forwardRef<HTMLDivElement, Props>(({ platformSlug, label, width, height, ...rest }: Props, ref) => (
   <div ref={ref} {...rest}>
-    <Group noWrap>
+    <Group>
       <div>{getSocialIcon(platformSlug)}</div>
       <div>
         <Text size="sm">{label}</Text>

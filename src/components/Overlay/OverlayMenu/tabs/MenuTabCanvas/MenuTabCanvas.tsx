@@ -14,7 +14,7 @@ import theme from '~/theme';
 import getSizePresetDataFromSlug from '~/utils/getSizePresetDataFromSlug';
 import getSizePresetOptions from '~/utils/getSizePresetOptions';
 
-import SizePresetSelectItem from './SizePresetSelectItem';
+import SizePresetSelectItem, { SizePresetOption } from './SizePresetSelectItem';
 import { H4 } from '../../commonTabComponents';
 
 const CanvasSizeGridDiv = styled.div`
@@ -79,15 +79,16 @@ export default function MenuTabCanvas({ closeModal }: Props) {
           max={5000}
           value={canvasWorkingSize.width}
           onChange={(value) => {
-            if (value && value !== canvasWorkingSize.width) {
-              setCanvasWorkingWidth(value);
+            const numericValue = typeof value === 'number' ? value : parseFloat(value);
+            if (numericValue && numericValue !== canvasWorkingSize.width) {
+              setCanvasWorkingWidth(numericValue);
               setDefaultParams({
                 sizePreset: null,
               });
               setCenter();
             }
           }}
-          icon={<RxWidth />}
+          leftSection={<RxWidth />}
           rightSection="px"
           rightSectionWidth={40}
         />
@@ -97,15 +98,16 @@ export default function MenuTabCanvas({ closeModal }: Props) {
           max={5000}
           value={canvasWorkingSize.height}
           onChange={(value) => {
-            if (value && value !== canvasWorkingSize.height) {
-              setCanvasWorkingHeight(value);
+            const numericValue = typeof value === 'number' ? value : parseFloat(value);
+            if (numericValue && numericValue !== canvasWorkingSize.height) {
+              setCanvasWorkingHeight(numericValue);
               setDefaultParams({
                 sizePreset: null,
               });
               setCenter();
             }
           }}
-          icon={<RxHeight />}
+          leftSection={<RxHeight />}
           rightSection="px"
           rightSectionWidth={40}
         />
@@ -116,7 +118,7 @@ export default function MenuTabCanvas({ closeModal }: Props) {
           size="sm"
           label="Presets"
           placeholder="Search presets"
-          renderOption={SizePresetSelectItem}
+          renderOption={(item) => <SizePresetSelectItem {...(item as unknown as SizePresetOption)} />}
           data={data}
           searchable
           value={defaultParams.sizePreset}
@@ -166,7 +168,7 @@ export default function MenuTabCanvas({ closeModal }: Props) {
       <Button
         size="xs"
         variant="default"
-        leftIcon={<TbTrashX />}
+        leftSection={<TbTrashX />}
         onClick={() => {
           resetCanvasObjects();
           setCenter();
