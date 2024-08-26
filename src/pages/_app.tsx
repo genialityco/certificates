@@ -49,12 +49,7 @@ function RouterTransition() {
       zIndex={10000}
       withinPortal={true}
       portalProps={{}}
-      style={{
-        position: 'fixed',
-        bottom: 0,
-        left: 0,
-        right: 0,
-      }}
+      className="fixed-bottom"
     />
   );
 }
