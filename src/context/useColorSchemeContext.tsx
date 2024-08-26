@@ -1,5 +1,7 @@
-import { useMantineColorScheme, type ColorScheme } from '@mantine/core';
+import { useMantineColorScheme } from '@mantine/core';
 import React, { useContext, useState, useMemo, useEffect, createContext, type ReactNode } from 'react';
+
+type ColorScheme = 'light' | 'dark' | 'auto';
 
 interface ColorSchemeContextType {
   isColorSchemeLoading: boolean;
