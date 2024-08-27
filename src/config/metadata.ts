@@ -1,6 +1,6 @@
 import packageJson from '~/../package.json';
 
-const cleanUrl = 'localhost:3000';
+const cleanUrl = 'https://gen-certificates.netlify.app';
 
 const metadata = {
   website: {

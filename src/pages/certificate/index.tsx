@@ -20,7 +20,7 @@ export default function Certificado() {
   const appendTextObject = useCanvasObjects((state) => state.appendTextObject);
   const appendImageObject = useCanvasObjects((state) => state.appendImageObject);
 
-  const imageUrl = 'https://i.ibb.co/8zwSThJ/CERTFICADOS-CONGRESO-PH.png';
+  const imageUrl = 'https://i.ibb.co/9wqzYf6/Fondo.png';
 
   /* eslint-disable @typescript-eslint/ban-ts-comment */
   // @ts-ignore
