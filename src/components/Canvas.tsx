@@ -428,7 +428,7 @@ export default function Canvas() {
   };
 
   // Para insertar una imagen
-  const imageUrl = 'https://i.ibb.co/c6Yhnt5/CERTFICADOS-CONGRESO-PH.png';
+  const imageUrl = 'https://i.ibb.co/xSx0zjL/CERTFICADOS-CONGRESO-PH.png';
 
   const pushImageObject = async ({ imageElement }: OptionItem) => {
     const createdObjectId = generateUniqueId();

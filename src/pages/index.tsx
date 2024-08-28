@@ -45,7 +45,7 @@ export default function Page() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        background: 'url(https://i.ibb.co/v3PX5Kz/Fondo.png) no-repeat center center',
+        background: 'url(https://i.ibb.co/jLszgQc/Fondo.png) no-repeat center center',
         backgroundSize: 'contain',
       }}
       fluid
