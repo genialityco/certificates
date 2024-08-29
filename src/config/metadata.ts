@@ -22,7 +22,7 @@ const metadata = {
     github: 'https://github.com/diogocapela/flatdraw',
   },
   services: {
-    googleAnalyticsMeasurementId: 'G-9Z2SEF215G',
+    googleAnalyticsMeasurementId: 'G-6WH71T8XKP',
   },
 };
 
