@@ -6,6 +6,8 @@ import { BsImage, BsX } from 'react-icons/bs';
 import { FaPlus, FaSearch, FaUnsplash, FaUpload } from 'react-icons/fa';
 import styled from 'styled-components';
 
+import UnsplashImageButton, { type OptionItem } from './UnsplashImageButton';
+
 import { UnderlineLink } from '~/components/Link';
 import ControlHeader from '~/components/Overlay/OverlaySidebar/components/ControlHeader';
 import useCanvasContext from '~/context/useCanvasContext';
@@ -21,7 +23,6 @@ import getDimensionsFromImage from '~/utils/getDimensionsFromImage';
 import getImageElementFromUrl from '~/utils/getImageElementFromUrl';
 import notification from '~/utils/notification';
 
-import UnsplashImageButton, { type OptionItem } from './UnsplashImageButton';
 
 const GridDiv = styled.div`
   width: 100%;

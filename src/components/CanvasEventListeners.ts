@@ -128,7 +128,7 @@ export default function CanvasEventListeners() {
   useEffect(() => {
     initCanvas();
     setCenter();
-  }, []);
+  }, [initCanvas, setCenter]);
 
   return null;
 }
