@@ -24,44 +24,42 @@ export const fetchFilteredGlobal = async (colection, filters) => {
   }
 };
 
-
 // API para eventos
 export const fetchAllsEvents = async () => {
   const response = await axiosInstance.get('/events');
   return response.data;
-}
+};
 
 export const fetchEventById = async (eventId) => {
   const response = await axiosInstance.get(`/events/${eventId}`);
   return response.data;
-}
+};
 
 export const createEvent = async (eventData) => {
   const response = await axiosInstance.post('/events', eventData);
   return response.data;
-}
+};
 
 export const deleteEvent = async (eventId) => {
   const response = await axiosInstance.delete(`/events/${eventId}`);
   return response.data;
-}
-
+};
 
 // API para asistentes
 export const addAttendee = async (attendeeData) => {
   const response = await axiosInstance.post(`/attendees`, attendeeData);
   return response.data;
-}
+};
 
 export const updateAttendee = async (attendeeId, attendeeData) => {
   const response = await axiosInstance.put(`/attendees/${attendeeId}`, attendeeData);
   return response.data;
-}
+};
 
 export const deleteAttendee = async (attendeeId) => {
   const response = await axiosInstance.delete(`/attendees/${attendeeId}`);
   return response.data;
-}
+};
 
 // no usado
 export const fetchEventProperties = async () => {

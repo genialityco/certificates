@@ -46,7 +46,7 @@ const BottomRightDiv = styled.div`
   right: 0;
 `;
 
-export default function Overlay({eventId} : {eventId: string}) {
+export default function Overlay({ eventId }: { eventId: string }) {
   return (
     <FixedDiv>
       <TopDiv>

@@ -94,7 +94,7 @@ const userModeButtonsSecondary: UserModeButton[] = [
     mode: 'attribute',
     label: 'Attribute',
     icon: <BiCode />,
-  }
+  },
 ];
 
 export default function OverlayNavbar() {

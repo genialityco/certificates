@@ -23,7 +23,7 @@ export default function Page() {
   const handleSearch = async () => {
     const filters = { 'properties.numeroDocumento': inputValue };
     // const transformedFilters = transformFilters(filters);
-    const data = await fetchFilteredGlobal("Attendee", filters);
+    const data = await fetchFilteredGlobal('Attendee', filters);
     const user = data[0];
     if (user.certificates.length === 0) {
       alert('No existen certificados para este documento.');

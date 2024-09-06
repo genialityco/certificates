@@ -11,13 +11,11 @@ export default function Page() {
 
   const handleSearch = async () => {
     const filters = { 'properties.numeroDocumento': inputValue };
-    const data = await fetchFilteredGlobal("Attendee", filters);
+    const data = await fetchFilteredGlobal('Attendee', filters);
     const user = data[0];
     if (user && user.certificates.length > 0) {
       const eventId = user.certificates[0].event._id;
-      router.push(
-        `/certificate?userId=${encodeURIComponent(user._id)}&eventId=${encodeURIComponent(eventId)}`
-      );
+      router.push(`/certificate?userId=${encodeURIComponent(user._id)}&eventId=${encodeURIComponent(eventId)}`);
     } else {
       alert('No existen certificados para este documento.');
     }
