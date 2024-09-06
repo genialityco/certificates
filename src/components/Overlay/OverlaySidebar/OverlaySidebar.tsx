@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+import { fetchFilteredGlobal } from '~/api';
+import useActionMode from '~/store/useActionMode';
+import useActiveObjectId from '~/store/useActiveObjectId';
+import useCanvasObjects from '~/store/useCanvasObjects';
+import useUserMode from '~/store/useUserMode';
+import theme from '~/theme';
+
 import ActionsControl from './controls/ActionsControl';
 import AlignControl from './controls/AlignControl';
 import AttributeControl from './controls/AttributeControl';
@@ -14,13 +21,6 @@ import OpacityControl from './controls/OpacityControl';
 import StrokeColorControl from './controls/StrokeColorControl';
 import StrokeWidthControl from './controls/StrokeWidthControl';
 import TextControl from './controls/TextControl';
-
-import { fetchFilteredGlobal } from '~/api';
-import useActionMode from '~/store/useActionMode';
-import useActiveObjectId from '~/store/useActiveObjectId';
-import useCanvasObjects from '~/store/useCanvasObjects';
-import useUserMode from '~/store/useUserMode';
-import theme from '~/theme';
 
 interface Property {
   name: string;
@@ -41,7 +41,7 @@ const Aside = styled.aside`
   }
 `;
 
-export default function OverlaySidebar({eventId} : {eventId: string}) {
+export default function OverlaySidebar({ eventId }: { eventId: string }) {
   const [userProperties, setUserProperties] = useState<Property[]>([]);
   const [selectedProperty, setSelectedProperty] = useState('');
   const activeObjectId = useActiveObjectId((state) => state.activeObjectId);

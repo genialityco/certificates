@@ -38,7 +38,10 @@ const DataTable: React.FC = () => {
   const [propertyHeadersApi, setPropertyHeadersApi] = useState<EventProperty[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>('');
   const [debouncedSearchTerm] = useDebouncedValue(searchTerm, 300);
-  const [modalState, setModalState] = useState<{ isOpen: boolean; mode: 'add' | 'edit'; user?: EventUser }>({ isOpen: false, mode: 'add' });
+  const [modalState, setModalState] = useState<{ isOpen: boolean; mode: 'add' | 'edit'; user?: EventUser }>({
+    isOpen: false,
+    mode: 'add',
+  });
   const [newUserData, setNewUserData] = useState<{ [key: string]: string }>({});
   const [editingUserData, setEditingUserData] = useState<{ [key: string]: string }>({});
   const [loading, setLoading] = useState<boolean>(true);
@@ -94,8 +97,8 @@ const DataTable: React.FC = () => {
 
   const filteredData = useMemo(() => {
     return allData.filter((item) =>
-      propertyHeadersApi.some((header) =>
-        item.properties[header.name]?.toString().toLowerCase().includes(debouncedSearchTerm.toLowerCase())
+      propertyHeadersApi.some(
+        (header) => item.properties[header.name]?.toString().toLowerCase().includes(debouncedSearchTerm.toLowerCase())
       )
     );
   }, [allData, debouncedSearchTerm, propertyHeadersApi]);
@@ -204,7 +207,9 @@ const DataTable: React.FC = () => {
                 <TextInput placeholder="Buscar usuario" value={searchTerm} onChange={handleSearchChange} fs={{ width: '100%' }} />
               </Grid.Col>
               <Grid.Col span={4}>
-                <Button fullWidth onClick={() => openModal('add')}>Añadir</Button>
+                <Button fullWidth onClick={() => openModal('add')}>
+                  Añadir
+                </Button>
               </Grid.Col>
             </Grid>
           </Box>
@@ -253,7 +258,11 @@ const DataTable: React.FC = () => {
         </Box>
       )}
 
-      <Modal opened={modalState.isOpen} onClose={() => setModalState({ isOpen: false, mode: 'add' })} title={modalState.mode === 'add' ? 'Añadir Usuario' : 'Editar Usuario'}>
+      <Modal
+        opened={modalState.isOpen}
+        onClose={() => setModalState({ isOpen: false, mode: 'add' })}
+        title={modalState.mode === 'add' ? 'Añadir Usuario' : 'Editar Usuario'}
+      >
         {modalState.mode === 'add' ? (
           <form onSubmit={handleAddUser}>
             {propertyHeadersApi.map((header) => (

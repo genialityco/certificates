@@ -1,9 +1,7 @@
-import { Slider, NativeSelect,Button, Tooltip } from '@mantine/core';
+import { Slider, NativeSelect, Button, Tooltip } from '@mantine/core';
 import React, { type ReactNode } from 'react';
 import { FaBold, FaItalic, FaSortAmountUp } from 'react-icons/fa';
 import styled from 'styled-components';
-
-import ControlHeader from '../components/ControlHeader';
 
 import ColorPicker from '~/components/ColorPicker/ColorPicker';
 import useActiveObjectId from '~/store/useActiveObjectId';
@@ -11,6 +9,8 @@ import useAvailableFonts from '~/store/useAvailableFonts';
 import useCanvasObjects from '~/store/useCanvasObjects';
 import useDefaultParams from '~/store/useDefaultParams';
 import theme from '~/theme';
+
+import ControlHeader from '../components/ControlHeader';
 
 const TextParamsGrid = styled.div`
   display: grid;
@@ -33,7 +33,6 @@ export default function AttributeControl() {
   if (!activeObject) {
     return null;
   }
-
 
   const fontStyleOptions: {
     label: string;

@@ -7,7 +7,6 @@ import { FaDownload } from 'react-icons/fa';
 import { fetchFilteredGlobal } from '~/api';
 import CanvasPreview from '~/components/CanvasPreview';
 import { CANVAS_PREVIEW_UNIQUE_ID } from '~/config/globalElementIds';
-import useCanvasContext from '~/context/useCanvasContext';
 import useCanvasObjects from '~/store/useCanvasObjects';
 import generateUniqueId from '~/utils/generateUniqueId';
 import getImageElementFromUrl from '~/utils/getImageElementFromUrl';
@@ -49,7 +48,6 @@ interface Certificate {
 }
 
 export default function Certificado() {
-  const { contextRef } = useCanvasContext();
   const [attendee, setAttendee] = useState<Attendee | null>(null);
   const [certificateElements, setCertificateElements] = useState<CertificateElement[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -116,7 +114,7 @@ export default function Certificado() {
       const imageElement = await getImageElementFromUrl(url);
       await pushImageObject({ imageUrl: url, imageElement, element });
     },
-    [contextRef, pushImageObject]
+    [pushImageObject]
   );
 
   // Función para renderizar el certificado

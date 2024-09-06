@@ -2,8 +2,6 @@ import { Button, Group } from '@mantine/core';
 import React, { useRef, type PointerEvent, type Touch, type TouchEvent } from 'react';
 import styled from 'styled-components';
 
-import { OptionItem } from './Overlay/OverlaySidebar/controls/ImageControl/UnsplashImageButton';
-
 import { createCertificate } from '~/api';
 import { TRANSPARENT_BACKGROUND_IMAGE } from '~/config/constants';
 import { APP_FIXED_MAIN_UNIQUE_ID } from '~/config/globalElementIds';
@@ -28,6 +26,8 @@ import getDimensionsFromImage from '~/utils/getDimensionsFromImage';
 import getImageElementFromUrl from '~/utils/getImageElementFromUrl';
 import getRelativeMousePositionOnCanvas from '~/utils/getRelativeMousePositionOnCanvas';
 import isCursorWithinRectangle from '~/utils/isCursorWithinRectangle';
+
+import { OptionItem } from './Overlay/OverlaySidebar/controls/ImageControl/UnsplashImageButton';
 
 const FixedMain = styled.main`
   position: fixed;

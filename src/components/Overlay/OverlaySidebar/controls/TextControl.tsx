@@ -4,8 +4,6 @@ import { FaAlignCenter, FaAlignJustify, FaAlignLeft, FaAlignRight, FaBold, FaIta
 import { MdAlignVerticalTop, MdAlignVerticalCenter, MdAlignVerticalBottom } from 'react-icons/md';
 import styled from 'styled-components';
 
-import ControlHeader from '../components/ControlHeader';
-
 import ColorPicker from '~/components/ColorPicker/ColorPicker';
 import useActiveObjectId from '~/store/useActiveObjectId';
 import useAvailableFonts from '~/store/useAvailableFonts';
@@ -13,6 +11,7 @@ import useCanvasObjects from '~/store/useCanvasObjects';
 import useDefaultParams from '~/store/useDefaultParams';
 import theme from '~/theme';
 
+import ControlHeader from '../components/ControlHeader';
 
 const TextParamsGrid = styled.div`
   display: grid;

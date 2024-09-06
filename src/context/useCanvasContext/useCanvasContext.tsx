@@ -10,10 +10,6 @@ import React, {
   type MutableRefObject,
 } from 'react';
 
-import canvasDrawEverything from './utils/canvasDrawEverything';
-import canvasInit from './utils/canvasInit';
-import canvasSetCenter from './utils/canvasSetCenter';
-
 import useActionMode from '~/store/useActionMode';
 import useActiveObjectId from '~/store/useActiveObjectId';
 import useCanvasBackgroundColor from '~/store/useCanvasBackgroundColor';
@@ -23,6 +19,9 @@ import useScrollPosition from '~/store/useScrollPosition';
 import useWindowSize from '~/store/useWindowSize';
 import useZoom from '~/store/useZoom';
 
+import canvasDrawEverything from './utils/canvasDrawEverything';
+import canvasInit from './utils/canvasInit';
+import canvasSetCenter from './utils/canvasSetCenter';
 
 interface CanvasContextType {
   canvasRef: MutableRefObject<HTMLCanvasElement | null>;

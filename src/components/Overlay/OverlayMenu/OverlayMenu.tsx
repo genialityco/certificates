@@ -6,11 +6,10 @@ import { FaBars } from 'react-icons/fa';
 import { GrUserSettings } from 'react-icons/gr';
 import styled from 'styled-components';
 
-import { menuTabsDefinition } from './menuTabsDefinition';
-
 import useModalContext from '~/context/useModalContext';
 import useActiveObjectId from '~/store/useActiveObjectId';
 
+import { menuTabsDefinition } from './menuTabsDefinition';
 
 const WrapperDiv = styled.div`
   pointer-events: auto;
