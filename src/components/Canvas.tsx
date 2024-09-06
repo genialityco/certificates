@@ -1,6 +1,10 @@
+import { Button, Group } from '@mantine/core';
 import React, { useRef, type PointerEvent, type Touch, type TouchEvent } from 'react';
 import styled from 'styled-components';
 
+import { OptionItem } from './Overlay/OverlaySidebar/controls/ImageControl/UnsplashImageButton';
+
+import { createCertificate } from '~/api';
 import { TRANSPARENT_BACKGROUND_IMAGE } from '~/config/constants';
 import { APP_FIXED_MAIN_UNIQUE_ID } from '~/config/globalElementIds';
 import { CANVAS_CONTROLS_OVERLAY } from '~/config/globalElementIds';
@@ -25,8 +29,6 @@ import getImageElementFromUrl from '~/utils/getImageElementFromUrl';
 import getRelativeMousePositionOnCanvas from '~/utils/getRelativeMousePositionOnCanvas';
 import isCursorWithinRectangle from '~/utils/isCursorWithinRectangle';
 
-import { OptionItem } from './Overlay/OverlaySidebar/controls/ImageControl/UnsplashImageButton';
-
 const FixedMain = styled.main`
   position: fixed;
   top: 0;
@@ -41,7 +43,7 @@ const FixedMain = styled.main`
 
 type PointerOrTouchEvent = PointerEvent<HTMLElement> | TouchEvent<HTMLElement>;
 
-export default function Canvas() {
+export default function Canvas({ eventId }: { eventId: string }) {
   const { canvasRef, contextRef, drawEverything } = useCanvasContext();
 
   const previousTouchRef = useRef<Touch | null>(null);
@@ -58,6 +60,7 @@ export default function Canvas() {
   const appendFreeDrawObject = useCanvasObjects((state) => state.appendFreeDrawObject);
   const appendTextObject = useCanvasObjects((state) => state.appendTextObject);
   const appendImageObject = useCanvasObjects((state) => state.appendImageObject);
+  const appendAttributeObject = useCanvasObjects((state) => state.appendAttributeObject);
   const updateCanvasObject = useCanvasObjects((state) => state.updateCanvasObject);
   const appendFreeDrawPointToCanvasObject = useCanvasObjects((state) => state.appendFreeDrawPointToCanvasObject);
   const moveCanvasObject = useCanvasObjects((state) => state.moveCanvasObject);
@@ -252,6 +255,28 @@ export default function Canvas() {
         setActionMode(null);
         break;
       }
+      case 'attribute': {
+        appendAttributeObject({
+          id: createdObjectId,
+          x: initialDrawingPositionRef.current.x,
+          y: initialDrawingPositionRef.current.y,
+          width: 200,
+          height: 100,
+          text: 'Attribute Text',
+          fontColorHex: defaultParams.fontColorHex,
+          fontSize: 44,
+          fontFamily: 'sans-serif',
+          fontStyle: 'normal',
+          fontWeight: 'normal',
+          fontVariant: 'normal',
+          fontLineHeightRatio: 1,
+          opacity: 100,
+        });
+        setActiveObjectId(createdObjectId);
+        setUserMode('select');
+        setActionMode(null);
+        break;
+      }
       default:
         break;
     }
@@ -428,7 +453,7 @@ export default function Canvas() {
   };
 
   // Para insertar una imagen
-  const imageUrl = 'https://i.ibb.co/xSx0zjL/CERTFICADOS-CONGRESO-PH.png';
+  const imageUrl = 'https://ik.imagekit.io/6cx9tc1kx/fondo%202.jpg?updatedAt=1725555286442';
 
   const pushImageObject = async ({ imageElement }: OptionItem) => {
     const createdObjectId = generateUniqueId();
@@ -503,6 +528,26 @@ export default function Canvas() {
     });
   };
 
+  const handleSave = async () => {
+    const elementsToSave = canvasObjects.map((object) => ({
+      id: object.id,
+      type: object.type,
+      x: object.x,
+      y: object.y,
+      width: object.width,
+      height: object.height,
+      additionalProps: { ...object },
+    }));
+
+    try {
+      await createCertificate(eventId, elementsToSave);
+    } catch (error) {
+      console.log('Error saving certificate:', error);
+    }
+
+    // En el futuro, podrías enviar `elementsToSave` al backend para guardarlos en la base de datos
+  };
+
   return (
     <FixedMain
       id={APP_FIXED_MAIN_UNIQUE_ID}
@@ -529,16 +574,14 @@ export default function Canvas() {
         width={windowSize.width}
         height={windowSize.height}
       />
-      <div>
-        <button
-          name="Add text"
-          value=""
-          style={{ position: 'fixed', bottom: '0', zIndex: 9999 }}
-          onClick={() => handleAppendText()}
-        >
-          Add text
-        </button>
-      </div>
+      <Group justify="start" m="md" style={{ position: 'fixed', bottom: '0', zIndex: 9999 }}>
+        <Button name="Save" value="" onClick={() => handleSave()}>
+          Guardar
+        </Button>
+        <Button name="Add text" value="" onClick={() => handleAppendText()}>
+          Generar certificado
+        </Button>
+      </Group>
       <div
         style={{
           position: 'absolute',

@@ -1,3 +1,4 @@
+import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 
 import Canvas from '~/components/Canvas';
@@ -5,6 +6,9 @@ import CanvasEventListeners from '~/components/CanvasEventListeners';
 import Overlay from '~/components/Overlay';
 
 export default function AppLayout() {
+  const router = useRouter();
+  const { eventId } = router.query;
+
   useEffect(() => {
     const html = document.querySelector('html');
 
@@ -21,8 +25,8 @@ export default function AppLayout() {
 
   return (
     <>
-      <Overlay />
-      <Canvas />
+      <Overlay eventId={eventId ? String(eventId) : ''} />
+      <Canvas eventId={eventId ? String(eventId) : ''} />
       <CanvasEventListeners />
     </>
   );

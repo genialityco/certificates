@@ -10,6 +10,7 @@ import type {
   ImageObject,
   ActionModeOption,
   CanvasWorkingSize,
+  AttributeObject,
 } from '~/config/types';
 import generateUniqueId from '~/utils/generateUniqueId';
 import getPositionFromDrawingPoints from '~/utils/getPositionFromDrawingPoints';
@@ -58,6 +59,7 @@ const useCanvasObjects = create<{
   appendTextObject: (text: Omit<TextObject, 'type'>) => void;
   appendIconObject: (icon: Omit<IconObject, 'type'>) => void;
   appendImageObject: (icon: Omit<ImageObject, 'type'>) => void;
+  appendAttributeObject: (attribute: Omit<AttributeObject, 'type'>) => void;
   updateCanvasObject: (id: string, object: Partial<CanvasObject>) => void;
   appendFreeDrawPointToCanvasObject: (id: string, point: { x: number; y: number }) => void;
   deleteCanvasObject: (id: string) => void;
@@ -148,6 +150,19 @@ const useCanvasObjects = create<{
         },
       ],
     })),
+  appendAttributeObject: (attribute: Omit<AttributeObject, 'type'>) =>
+    set((state) => ({
+      canvasObjects: [
+        ...state.canvasObjects,
+        {
+          ...DEFAULT_CANVAS_OBJECT,
+          type: 'attribute',
+          id: generateUniqueId(),
+          ...attribute,
+        },
+      ],
+    })),
+
   updateCanvasObject: (id, partialObject) =>
     set((state) => ({
       canvasObjects: state.canvasObjects.map((existing) =>

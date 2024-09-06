@@ -13,12 +13,13 @@ import {
 } from 'react-icons/bs';
 import styled from 'styled-components';
 
+import ControlHeader from '../components/ControlHeader';
+
 import useActiveObjectId from '~/store/useActiveObjectId';
 import useCanvasObjects from '~/store/useCanvasObjects';
 import useCanvasWorkingSize from '~/store/useCanvasWorkingSize';
 import theme from '~/theme';
 
-import ControlHeader from '../components/ControlHeader';
 
 const AlignGridDiv = styled.div`
   display: grid;

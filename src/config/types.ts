@@ -14,7 +14,7 @@ export type ActionMode = null | {
   option: ActionModeOption | null;
 };
 
-type CanvasObjectType = 'rectangle' | 'ellipse' | 'free-draw' | 'line' | 'arrow' | 'text' | 'icon' | 'image';
+type CanvasObjectType = 'rectangle' | 'ellipse' | 'free-draw' | 'line' | 'arrow' | 'text' | 'icon' | 'image' | 'attribute';
 
 export type UserMode = 'select' | CanvasObjectType;
 
@@ -87,6 +87,13 @@ export type IconObject = ObjectCommonProperties & {
 export type ImageObject = ObjectCommonProperties & {
   type: 'image';
 } & Pick<CanvasObject, 'imageUrl' | 'imageElement'>;
+
+export type AttributeObject = ObjectCommonProperties & {
+  type: 'attribute';
+} & Pick<
+    CanvasObject,
+    'text' | 'fontColorHex' | 'fontSize' | 'fontFamily' | 'fontStyle' | 'fontVariant' | 'fontWeight' | 'fontLineHeightRatio'
+  >;
 
 export interface UnsplashImage {
   id: string;

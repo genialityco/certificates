@@ -1,5 +1,6 @@
 import { ActionIcon, Tooltip } from '@mantine/core';
 import React, { type ReactNode } from 'react';
+import { BiCode } from 'react-icons/bi';
 import { BsSquare, BsCircle, BsImageFill } from 'react-icons/bs';
 import { FaMousePointer } from 'react-icons/fa';
 import { HiPencil } from 'react-icons/hi';
@@ -89,6 +90,11 @@ const userModeButtonsSecondary: UserModeButton[] = [
     label: 'Image',
     icon: <BsImageFill />,
   },
+  {
+    mode: 'attribute',
+    label: 'Attribute',
+    icon: <BiCode />,
+  }
 ];
 
 export default function OverlayNavbar() {

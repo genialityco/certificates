@@ -3,18 +3,7 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 
-import { fetchFilteredGlobal } from '../api';
-/* eslint-disable @typescript-eslint/ban-ts-comment */
-// @ts-ignore
-// const transformFilters = (filters) => {
-//   /* eslint-disable @typescript-eslint/ban-ts-comment */
-//   // @ts-ignore
-//   return filters.map((filter) => ({
-//     field: filter.id,
-//     value: filter.value,
-//     comparator: 'like',
-//   }));
-// };
+import { fetchFilteredGlobal } from '../../api';
 
 export default function Page() {
   const [inputValue, setInputValue] = useState('');
@@ -22,19 +11,15 @@ export default function Page() {
 
   const handleSearch = async () => {
     const filters = { 'properties.numeroDocumento': inputValue };
-    // const transformedFilters = transformFilters(filters);
     const data = await fetchFilteredGlobal("Attendee", filters);
     const user = data[0];
-    if (user.certificates.length === 0) {
-      alert('No existen certificados para este documento.');
-      return;
-    }
-    if (user) {
+    if (user && user.certificates.length > 0) {
+      const eventId = user.certificates[0].event._id;
       router.push(
-        `/certificate?name=${encodeURIComponent(user.properties.names)}&documento=${encodeURIComponent(
-          user.properties.numeroDocumento
-        )}`
+        `/certificate?userId=${encodeURIComponent(user._id)}&eventId=${encodeURIComponent(eventId)}`
       );
+    } else {
+      alert('No existen certificados para este documento.');
     }
   };
 
@@ -46,7 +31,7 @@ export default function Page() {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
-        background: 'url(https://ik.imagekit.io/6cx9tc1kx/Fondo.png?updatedAt=1725565188343) no-repeat center center',
+        background: 'url(https://i.ibb.co/jLszgQc/Fondo.png) no-repeat center center',
         backgroundSize: 'contain',
       }}
       fluid

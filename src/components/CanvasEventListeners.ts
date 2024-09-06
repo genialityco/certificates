@@ -11,7 +11,7 @@ import useUserMode from '~/store/useUserMode';
 import useWindowSize from '~/store/useWindowSize';
 
 export default function CanvasEventListeners() {
-  const { canvasRef, initCanvas, drawEverything } = useCanvasContext();
+  const { canvasRef, initCanvas, drawEverything, setCenter } = useCanvasContext();
   const { isModalActive } = useModalContext();
 
   const activeObjectId = useActiveObjectId((state) => state.activeObjectId);
@@ -123,6 +123,11 @@ export default function CanvasEventListeners() {
     return () => {
       window.removeEventListener('ongesturestart', onGestureStart);
     };
+  }, []);
+
+  useEffect(() => {
+    initCanvas();
+    setCenter();
   }, []);
 
   return null;

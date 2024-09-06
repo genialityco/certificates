@@ -1,6 +1,7 @@
 import { CANVAS_CONTROLS_OVERLAY } from '~/config/globalElementIds';
 import type { ActionMode, CanvasObject, CanvasWorkingSize, ScrollPosition } from '~/config/types';
 import getControlPoints from '~/utils/getControlPoints';
+import renderAttribute  from '~/utils/render/renderAttribute';
 import renderEllipse from '~/utils/render/renderEllipse';
 import renderFreeDrawing from '~/utils/render/renderFreeDrawing';
 import renderImage from '~/utils/render/renderImage';
@@ -64,6 +65,10 @@ export default function canvasDrawEverything({
       }
       case 'image': {
         renderImage({ context, ...object });
+        break;
+      }
+      case 'attribute': {
+        renderAttribute({ context, ...object });
         break;
       }
       default:

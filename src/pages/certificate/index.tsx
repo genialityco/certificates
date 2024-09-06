@@ -1,107 +1,182 @@
 import { Button } from '@mantine/core';
 import jsPDF from 'jspdf';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { FaDownload } from 'react-icons/fa';
 
+import { fetchFilteredGlobal } from '~/api';
 import CanvasPreview from '~/components/CanvasPreview';
 import { CANVAS_PREVIEW_UNIQUE_ID } from '~/config/globalElementIds';
 import useCanvasContext from '~/context/useCanvasContext';
 import useCanvasObjects from '~/store/useCanvasObjects';
 import generateUniqueId from '~/utils/generateUniqueId';
-import getDimensionsFromImage from '~/utils/getDimensionsFromImage';
 import getImageElementFromUrl from '~/utils/getImageElementFromUrl';
+
+// Tipos para el esquema de Attendee y Certificate
+interface Attendee {
+  _id: string;
+  event: string;
+  organization?: string;
+  properties: Record<string, unknown>;
+}
+
+interface CertificateElement {
+  id: string;
+  type: 'text' | 'attribute' | 'image';
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  additionalProps: {
+    text?: string;
+    imageUrl?: string;
+    opacity?: number;
+    fontColorHex?: string;
+    fontSize?: number;
+    fontFamily?: string;
+    fontStyle?: 'normal' | 'italic' | 'oblique';
+    fontVariant?: 'normal' | 'small-caps';
+    fontWeight?: 'normal' | 'bold' | 'bolder' | 'lighter' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
+    fontLineHeightRatio?: number;
+    [key: string]: unknown;
+  };
+}
+
+interface Certificate {
+  elements: CertificateElement[];
+  event: string;
+  createdAt: string;
+}
 
 export default function Certificado() {
   const { contextRef } = useCanvasContext();
+  const [attendee, setAttendee] = useState<Attendee | null>(null);
+  const [certificateElements, setCertificateElements] = useState<CertificateElement[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
-  const { name, documento } = router.query;
+  const { attendeeId, eventId } = router.query;
 
-  const appendTextObject = useCanvasObjects((state) => state.appendTextObject);
+  const appendAttributeObject = useCanvasObjects((state) => state.appendAttributeObject);
   const appendImageObject = useCanvasObjects((state) => state.appendImageObject);
 
-  const imageUrl = 'https://i.ibb.co/xSx0zjL/CERTFICADOS-CONGRESO-PH.png';
+  // Obtener datos del usuario y del certificado
+  useEffect(() => {
+    const fetchUserCertificates = async () => {
+      setLoading(true);
+      try {
+        const filters = { _id: attendeeId };
+        const [user] = (await fetchFilteredGlobal('Attendee', filters)) as Attendee[];
+        if (!user) {
+          alert('No existen certificados para este documento.');
+          return;
+        }
+        setAttendee(user);
 
-  /* eslint-disable @typescript-eslint/ban-ts-comment */
-  // @ts-ignore
-  const pushImageObject = async ({ imageElement }) => {
-    const createdObjectId = generateUniqueId();
-    appendImageObject({
-      id: createdObjectId,
-      x: 0,
-      y: 0,
-      width: 1920,
-      height: 1080,
-      opacity: 100,
+        const [certificate] = (await fetchFilteredGlobal('Certificate', { event: eventId })) as Certificate[];
+        setCertificateElements(certificate?.elements || []);
+      } catch (error) {
+        console.error('Error fetching user certificates:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    if (attendeeId && eventId) {
+      fetchUserCertificates();
+    }
+  }, [attendeeId, eventId]);
+
+  // Insertar imagen en el canvas
+  const pushImageObject = useCallback(
+    async ({
       imageUrl,
       imageElement,
-    });
-  };
-  /* eslint-disable @typescript-eslint/ban-ts-comment */
-  // @ts-ignore
-  const commonPushImageObject = async (url) => {
-    const imageElement = await getImageElementFromUrl(url);
-    const dimensions = await getDimensionsFromImage({
-      context: contextRef?.current,
-      imageObject: { x: 0, y: 0, imageElement },
-    });
-    /* eslint-disable @typescript-eslint/ban-ts-comment */
-    // @ts-ignore
-    pushImageObject({ imageUrl: url, imageElement, dimensions });
-  };
+      element,
+    }: {
+      imageUrl: string;
+      imageElement: HTMLImageElement;
+      element: CertificateElement;
+    }) => {
+      appendImageObject({
+        id: element.id,
+        x: element.x,
+        y: element.y,
+        width: element.width,
+        height: element.height,
+        opacity: 100,
+        imageUrl,
+        imageElement,
+      });
+    },
+    [appendImageObject]
+  );
 
-  const handleAppendText = async () => {
-    await commonPushImageObject(imageUrl);
+  // Common image loader and appender
+  const commonPushImageObject = useCallback(
+    async (element: CertificateElement, url: string) => {
+      const imageElement = await getImageElementFromUrl(url);
+      await pushImageObject({ imageUrl: url, imageElement, element });
+    },
+    [contextRef, pushImageObject]
+  );
 
-    const idCertificateName = generateUniqueId();
-    const certificateName = name || 'Nombre no disponible';
-    appendTextObject({
-      id: idCertificateName,
-      x: 356,
-      y: 339,
-      width: 1211,
-      height: 100,
-      /* eslint-disable @typescript-eslint/ban-ts-comment */
-      // @ts-ignore
-      text: certificateName.toUpperCase(),
-      textAlignHorizontal: 'center',
-      textAlignVertical: 'middle',
-      textJustify: false,
-      fontColorHex: '#000000',
-      fontSize: 44,
-      fontFamily: 'sans-serif',
-      fontStyle: 'normal',
-      fontWeight: 'normal',
-      fontVariant: 'normal',
-      fontLineHeightRatio: 1,
-      opacity: 100,
-    });
+  // Función para renderizar el certificado
+  const handleRenderCertificate = useCallback(async () => {
+    for (const element of certificateElements) {
+      switch (element.type) {
+        case 'text':
+          appendAttributeObject({
+            id: element.id,
+            x: element.x,
+            y: element.y,
+            width: element.width,
+            height: element.height,
+            text: element.additionalProps.text || '',
+            opacity: element.additionalProps.opacity || 100,
+            fontColorHex: element.additionalProps.fontColorHex || '#000000',
+            fontSize: element.additionalProps.fontSize || 16,
+            fontFamily: element.additionalProps.fontFamily || 'Arial',
+            fontStyle: element.additionalProps.fontStyle || 'normal',
+            fontVariant: element.additionalProps.fontVariant || 'normal',
+            fontWeight: element.additionalProps.fontWeight || 'normal',
+            fontLineHeightRatio: element.additionalProps.fontLineHeightRatio || 1.2,
+          });
+          break;
+        case 'attribute':
+          element.additionalProps.text = (attendee?.properties[element.additionalProps.text || ''] as string) || '';
+          appendAttributeObject({
+            id: element.id,
+            x: element.x,
+            y: element.y,
+            width: element.width,
+            height: element.height,
+            text: element.additionalProps.text,
+            opacity: element.additionalProps.opacity || 100,
+            fontColorHex: element.additionalProps.fontColorHex || '#000000',
+            fontSize: element.additionalProps.fontSize || 16,
+            fontFamily: element.additionalProps.fontFamily || 'Arial',
+            fontStyle: element.additionalProps.fontStyle || 'normal',
+            fontVariant: element.additionalProps.fontVariant || 'normal',
+            fontWeight: element.additionalProps.fontWeight || 'normal',
+            fontLineHeightRatio: element.additionalProps.fontLineHeightRatio || 1.2,
+          });
+          break;
+        case 'image':
+          await commonPushImageObject(element, element.additionalProps.imageUrl || '');
+          break;
+        default:
+          break;
+      }
+    }
+  }, [certificateElements, appendAttributeObject, commonPushImageObject, attendee]);
 
-    const idCertificateNumber = generateUniqueId();
-    const certificateNumber = documento || 'Documento no disponible';
-    appendTextObject({
-      id: idCertificateNumber,
-      x: 669,
-      y: 471,
-      width: 582,
-      height: 100,
-      /* eslint-disable @typescript-eslint/ban-ts-comment */
-      // @ts-ignore
-      text: certificateNumber.replace(/\d(?=(?:\d{3})+$)/g, '$&.'),
-      textAlignHorizontal: 'center',
-      textAlignVertical: 'middle',
-      textJustify: false,
-      fontColorHex: '#000000',
-      fontSize: 35,
-      fontFamily: 'sans-serif',
-      fontStyle: 'normal',
-      fontWeight: 'normal',
-      fontVariant: 'normal',
-      fontLineHeightRatio: 1,
-      opacity: 100,
-    });
-  };
+  // Renderizar el certificado al cargar los elementos
+  useEffect(() => {
+    if (certificateElements.length > 0 && attendeeId && eventId) {
+      handleRenderCertificate();
+    }
+  }, [certificateElements, attendeeId, eventId, handleRenderCertificate]);
 
+  // Descargar el canvas como imagen o PDF
   const downloadCanvas = (type: 'png' | 'jpg' | 'pdf') => {
     const canvas = document.getElementById(CANVAS_PREVIEW_UNIQUE_ID) as HTMLCanvasElement;
     const image = canvas.toDataURL(`image/${type}`);
@@ -115,19 +190,12 @@ export default function Certificado() {
       pdf.addImage(image, 'JPEG', 0, 0, canvas.width, canvas.height);
       pdf.save(`${generateUniqueId()}.pdf`);
     } else {
-      const a = document.createElement('a');
-      a.download = `${generateUniqueId()}.${type}`;
-      a.href = image;
-      a.click();
-      a.remove();
+      const link = document.createElement('a');
+      link.download = `${generateUniqueId()}.${type}`;
+      link.href = image;
+      link.click();
     }
   };
-
-  useEffect(() => {
-    if (name && documento) {
-      handleAppendText();
-    }
-  }, [name, documento]);
 
   return (
     <div
@@ -141,44 +209,18 @@ export default function Certificado() {
       }}
     >
       <h1 style={{ color: 'white', marginTop: '50px' }}>Descarga tu certificado</h1>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          gap: '0.5rem',
-          marginBlock: '1rem',
-        }}
-      >
-        <Button
-          size="xs"
-          variant="default"
-          onClick={() => {
-            downloadCanvas('png');
-          }}
-          leftSection={<FaDownload />}
-        >
-          PNG
-        </Button>
-        <Button
-          size="xs"
-          variant="default"
-          onClick={() => {
-            downloadCanvas('jpg');
-          }}
-          leftSection={<FaDownload />}
-        >
-          JPG
-        </Button>
-        <Button
-          size="xs"
-          variant="default"
-          onClick={() => {
-            downloadCanvas('pdf');
-          }}
-          leftSection={<FaDownload />}
-        >
-          PDF
-        </Button>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: '0.5rem', marginBlock: '1rem' }}>
+        {['png', 'jpg', 'pdf'].map((format) => (
+          <Button
+            key={format}
+            size="xs"
+            variant="default"
+            onClick={() => downloadCanvas(format as 'png' | 'jpg' | 'pdf')}
+            leftSection={<FaDownload />}
+          >
+            {format.toUpperCase()}
+          </Button>
+        ))}
       </div>
       <div
         style={{
@@ -191,7 +233,7 @@ export default function Certificado() {
           paddingBottom: '15px',
         }}
       >
-        <CanvasPreview />
+        {!loading && <CanvasPreview />}
       </div>
     </div>
   );

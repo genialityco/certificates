@@ -1,7 +1,6 @@
-import { Slider, NativeSelect, Textarea, Button, Tooltip } from '@mantine/core';
+import { Slider, NativeSelect,Button, Tooltip } from '@mantine/core';
 import React, { type ReactNode } from 'react';
-import { FaAlignCenter, FaAlignJustify, FaAlignLeft, FaAlignRight, FaBold, FaItalic, FaSortAmountUp } from 'react-icons/fa';
-import { MdAlignVerticalTop, MdAlignVerticalCenter, MdAlignVerticalBottom } from 'react-icons/md';
+import { FaBold, FaItalic, FaSortAmountUp } from 'react-icons/fa';
 import styled from 'styled-components';
 
 import ControlHeader from '../components/ControlHeader';
@@ -13,14 +12,13 @@ import useCanvasObjects from '~/store/useCanvasObjects';
 import useDefaultParams from '~/store/useDefaultParams';
 import theme from '~/theme';
 
-
 const TextParamsGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
   grid-gap: ${theme.variables.sidebarGutter};
 `;
 
-export default function TextControl() {
+export default function AttributeControl() {
   const activeObjectId = useActiveObjectId((state) => state.activeObjectId);
 
   const setDefaultParams = useDefaultParams((state) => state.setDefaultParams);
@@ -36,85 +34,6 @@ export default function TextControl() {
     return null;
   }
 
-  const textAlignOptions: {
-    label: string;
-    icon: ReactNode;
-    onClick: () => void;
-    isActive: boolean;
-  }[] = activeObject
-    ? [
-        {
-          label: 'Left',
-          icon: <FaAlignLeft />,
-          onClick: () => {
-            updateCanvasObject(activeObject.id, {
-              textAlignHorizontal: 'left',
-            });
-          },
-          isActive: activeObject.textAlignHorizontal === 'left',
-        },
-        {
-          label: 'Center',
-          icon: <FaAlignCenter />,
-          onClick: () => {
-            updateCanvasObject(activeObject.id, {
-              textAlignHorizontal: 'center',
-            });
-          },
-          isActive: activeObject.textAlignHorizontal === 'center',
-        },
-        {
-          label: 'Right',
-          icon: <FaAlignRight />,
-          onClick: () => {
-            updateCanvasObject(activeObject.id, {
-              textAlignHorizontal: 'right',
-            });
-          },
-          isActive: activeObject.textAlignHorizontal === 'right',
-        },
-        {
-          label: 'Justify',
-          icon: <FaAlignJustify />,
-          onClick: () => {
-            updateCanvasObject(activeObject.id, {
-              textJustify: !activeObject.textJustify,
-            });
-          },
-          isActive: activeObject.textJustify,
-        },
-        {
-          label: 'Top',
-          icon: <MdAlignVerticalTop />,
-          onClick: () => {
-            updateCanvasObject(activeObject.id, {
-              textAlignVertical: 'top',
-            });
-          },
-          isActive: activeObject.textAlignVertical === 'top',
-        },
-        {
-          label: 'Middle',
-          icon: <MdAlignVerticalCenter />,
-          onClick: () => {
-            updateCanvasObject(activeObject.id, {
-              textAlignVertical: 'middle',
-            });
-          },
-          isActive: activeObject.textAlignVertical === 'middle',
-        },
-        {
-          label: 'Bottom',
-          icon: <MdAlignVerticalBottom />,
-          onClick: () => {
-            updateCanvasObject(activeObject.id, {
-              textAlignVertical: 'bottom',
-            });
-          },
-          isActive: activeObject.textAlignVertical === 'bottom',
-        },
-      ]
-    : [];
 
   const fontStyleOptions: {
     label: string;
@@ -158,27 +77,6 @@ export default function TextControl() {
 
   return (
     <>
-      <ControlHeader title="Text" />
-      <Textarea
-        key={`text-input-${activeObject.id}`}
-        size="xs"
-        value={activeObject.text}
-        onChange={(event) => {
-          updateCanvasObject(activeObject.id, {
-            text: event.target.value,
-          });
-        }}
-      />
-      <ControlHeader title="Text Align" />
-      <TextParamsGrid>
-        {textAlignOptions.map(({ label, icon, onClick, isActive }) => (
-          <Tooltip key={label} label={label} position="top">
-            <Button variant={isActive ? 'outline' : 'default'} color="dark" size="xs" onClick={onClick}>
-              {icon}
-            </Button>
-          </Tooltip>
-        ))}
-      </TextParamsGrid>
       <ControlHeader title="Font Family" />
       <NativeSelect
         key={`font-family-select-${activeObject.id}`}

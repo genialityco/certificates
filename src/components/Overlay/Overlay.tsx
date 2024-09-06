@@ -46,7 +46,7 @@ const BottomRightDiv = styled.div`
   right: 0;
 `;
 
-export default function Overlay() {
+export default function Overlay({eventId} : {eventId: string}) {
   return (
     <FixedDiv>
       <TopDiv>
@@ -57,7 +57,7 @@ export default function Overlay() {
         <OverlayZoom />
       </BottomRightDiv>
       <LeftDiv>
-        <OverlaySidebar />
+        <OverlaySidebar eventId={eventId} />
       </LeftDiv>
     </FixedDiv>
   );
