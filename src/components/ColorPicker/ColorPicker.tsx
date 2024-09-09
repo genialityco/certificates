@@ -1,12 +1,12 @@
 import React, { useRef, useState, type CSSProperties } from 'react';
 import styled from 'styled-components';
 
-import ColorPickerElement from './ColorPickerElement';
-
 import type { ColorPickerType } from '~/config/types';
 import useOnClickOutside from '~/hooks/useOnClickOutside';
 import useDefaultParams from '~/store/useDefaultParams';
 import theme from '~/theme';
+
+import ColorPickerElement from './ColorPickerElement';
 
 const SIZE = '30px';
 
