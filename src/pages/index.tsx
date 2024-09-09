@@ -3,35 +3,34 @@ import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import { FaSearch } from 'react-icons/fa';
 
-import { fetchFilteredGlobal } from '../api';
+import { fetchEventUsersData } from '../api';
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 // @ts-ignore
-// const transformFilters = (filters) => {
-//   /* eslint-disable @typescript-eslint/ban-ts-comment */
-//   // @ts-ignore
-//   return filters.map((filter) => ({
-//     field: filter.id,
-//     value: filter.value,
-//     comparator: 'like',
-//   }));
-// };
+const transformFilters = (filters) => {
+  /* eslint-disable @typescript-eslint/ban-ts-comment */
+  // @ts-ignore
+  return filters.map((filter) => ({
+    field: filter.id,
+    value: filter.value,
+    comparator: 'like',
+  }));
+};
 
 export default function Page() {
   const [inputValue, setInputValue] = useState('');
   const router = useRouter();
 
   const handleSearch = async () => {
-    const filters = { 'properties.numeroDocumento': inputValue };
-    // const transformedFilters = transformFilters(filters);
-    const data = await fetchFilteredGlobal('Attendee', filters);
-    const user = data[0];
-    if (user.certificates.length === 0) {
-      alert('No existen certificados para este documento.');
-      return;
+    const filters = [{ id: 'properties.numeroDocumento', value: inputValue }];
+    const transformedFilters = transformFilters(filters);
+    const data = await fetchEventUsersData(1, 10, transformedFilters);
+    const user = data.data[0];
+    if (data.data.length === 0) {
+      alert('No existe certificado para este documento.');
     }
     if (user) {
       router.push(
-        `/certificate?name=${encodeURIComponent(user.properties.names)}&documento=${encodeURIComponent(
+        `/certificate-ph?name=${encodeURIComponent(user.properties.names)}&documento=${encodeURIComponent(
           user.properties.numeroDocumento
         )}`
       );
