@@ -85,7 +85,7 @@ const useCanvasObjects = create<{
         {
           ...DEFAULT_CANVAS_OBJECT,
           type: 'rectangle',
-          id: generateUniqueId(),
+          id: rectangle.id || generateUniqueId(),
           ...rectangle,
         },
       ],
@@ -97,7 +97,7 @@ const useCanvasObjects = create<{
         {
           ...DEFAULT_CANVAS_OBJECT,
           type: 'ellipse',
-          id: generateUniqueId(),
+          id: ellipse.id || generateUniqueId(),
           ...ellipse,
         },
       ],
@@ -109,7 +109,7 @@ const useCanvasObjects = create<{
         {
           ...DEFAULT_CANVAS_OBJECT,
           type: 'free-draw',
-          id: generateUniqueId(),
+          id: freeDraw.id || generateUniqueId(),
           ...freeDraw,
         },
       ],
@@ -121,7 +121,7 @@ const useCanvasObjects = create<{
         {
           ...DEFAULT_CANVAS_OBJECT,
           type: 'text',
-          id: generateUniqueId(),
+          id: text.id || generateUniqueId(),
           ...text,
         },
       ],
@@ -133,7 +133,7 @@ const useCanvasObjects = create<{
         {
           ...DEFAULT_CANVAS_OBJECT,
           type: 'icon',
-          id: generateUniqueId(),
+          id: icon.id || generateUniqueId(),
           ...icon,
         },
       ],
@@ -145,7 +145,7 @@ const useCanvasObjects = create<{
         {
           ...DEFAULT_CANVAS_OBJECT,
           type: 'image',
-          id: generateUniqueId(),
+          id: icon.id || generateUniqueId(),
           ...icon,
         },
       ],
@@ -157,7 +157,7 @@ const useCanvasObjects = create<{
         {
           ...DEFAULT_CANVAS_OBJECT,
           type: 'attribute',
-          id: generateUniqueId(),
+          id: attribute.id || generateUniqueId(),
           ...attribute,
         },
       ],

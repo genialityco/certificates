@@ -19,7 +19,7 @@ import { useEffect, useState } from 'react';
 import { BiPlus } from 'react-icons/bi';
 import { TbTrash } from 'react-icons/tb';
 
-import { createEvent, fetchAllsEvents, deleteEvent } from '~/api'; // Asegúrate de importar deleteEvent
+import { createEvent, fetchAllsEvents, deleteEvent, fetchFilteredGlobal } from '~/api';
 
 interface UserProperty {
   label: string;
@@ -35,8 +35,16 @@ interface Event {
   userProperties: UserProperty[];
 }
 
+interface Certificate {
+  _id: string;
+  elements: Array<unknown>;
+  event: string;
+  // Otros campos relevantes del certificado
+}
+
 export default function Dashboard() {
   const [events, setEvents] = useState<Event[]>([]);
+  const [certificates, setCertificates] = useState<Record<string, Certificate | null>>({});
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   // Inicializar userProperties por defecto
@@ -62,6 +70,25 @@ export default function Dashboard() {
   const fetchEvents = async () => {
     const response = await fetchAllsEvents();
     setEvents(response);
+    response.forEach((event: Event) => {
+      checkCertificate(event._id);
+    });
+  };
+
+  const checkCertificate = async (eventId: string) => {
+    const filters = { event: eventId };
+    const result = await fetchFilteredGlobal('Certificate', filters);
+    if (result && result.length > 0) {
+      setCertificates((prevCertificates) => ({
+        ...prevCertificates,
+        [eventId]: result[0],
+      }));
+    } else {
+      setCertificates((prevCertificates) => ({
+        ...prevCertificates,
+        [eventId]: null,
+      }));
+    }
   };
 
   const handleCreateCertificate = async () => {
@@ -76,8 +103,8 @@ export default function Dashboard() {
 
   const handleDeleteEvent = async (eventId: string) => {
     try {
-      await deleteEvent(eventId); // Llama a la función deleteEvent para eliminar el evento
-      fetchEvents(); // Vuelve a obtener la lista actualizada
+      await deleteEvent(eventId);
+      fetchEvents();
     } catch (error) {
       console.error('Error eliminando el evento:', error);
     }
@@ -153,9 +180,19 @@ export default function Dashboard() {
             <Button mt="md" fullWidth onClick={() => router.push(`/event/${event._id}`)}>
               Ir a la landing
             </Button>
-            <Button mt="md" fullWidth onClick={() => router.push(`/event/${event._id}/design`)}>
-              Editar certificado
-            </Button>
+            {certificates[event._id] ? (
+              <Button
+                mt="md"
+                fullWidth
+                onClick={() => router.push(`/event/${event._id}/design?certificateId=${certificates[event._id]?._id}`)}
+              >
+                Editar certificado
+              </Button>
+            ) : (
+              <Button mt="md" fullWidth onClick={() => router.push(`/event/${event._id}/design`)}>
+                Crear certificado
+              </Button>
+            )}
             <Button mt="md" fullWidth onClick={() => router.push(`/event/${event._id}/manage-users`)}>
               Gestionar usuarios
             </Button>
@@ -176,8 +213,8 @@ export default function Dashboard() {
       <Modal opened={isModalOpen} size="lg" onClose={() => setIsModalOpen(false)} title="Crear nuevo certificado">
         <Stack m="lg">
           <TextInput
-            label="Nombre del evento"
-            placeholder="Nombre del certificado"
+            label="Nombre del certificado"
+            placeholder="Certificado laboral, asistencia, etc."
             value={newEvent.name}
             onChange={(e) => handleInputChange('name', e.target.value)}
           />

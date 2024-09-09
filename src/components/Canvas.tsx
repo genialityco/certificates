@@ -1,12 +1,13 @@
 import { Button, Group } from '@mantine/core';
-import React, { useRef, type PointerEvent, type Touch, type TouchEvent } from 'react';
+import { useRouter } from 'next/router';
+import React, { useEffect, useRef, type PointerEvent, type Touch, type TouchEvent } from 'react';
 import styled from 'styled-components';
 
-import { createCertificate } from '~/api';
+import { createCertificate, fetchFilteredGlobal, updateCertificate } from '~/api';
 import { TRANSPARENT_BACKGROUND_IMAGE } from '~/config/constants';
 import { APP_FIXED_MAIN_UNIQUE_ID } from '~/config/globalElementIds';
 import { CANVAS_CONTROLS_OVERLAY } from '~/config/globalElementIds';
-import type { ActionModeOption } from '~/config/types';
+import type { ActionModeOption, CanvasObject } from '~/config/types';
 import useCanvasContext from '~/context/useCanvasContext';
 import useActionMode from '~/store/useActionMode';
 import useActiveObjectId from '~/store/useActiveObjectId';
@@ -22,12 +23,9 @@ import generateUniqueId from '~/utils/generateUniqueId';
 import getControlPoints from '~/utils/getControlPoints';
 import getCursorFromModes from '~/utils/getCursorFromModes';
 import getDimensionsFromFreeDraw from '~/utils/getDimensionsFromFreeDraw';
-import getDimensionsFromImage from '~/utils/getDimensionsFromImage';
 import getImageElementFromUrl from '~/utils/getImageElementFromUrl';
 import getRelativeMousePositionOnCanvas from '~/utils/getRelativeMousePositionOnCanvas';
 import isCursorWithinRectangle from '~/utils/isCursorWithinRectangle';
-
-import { OptionItem } from './Overlay/OverlaySidebar/controls/ImageControl/UnsplashImageButton';
 
 const FixedMain = styled.main`
   position: fixed;
@@ -45,6 +43,7 @@ type PointerOrTouchEvent = PointerEvent<HTMLElement> | TouchEvent<HTMLElement>;
 
 export default function Canvas({ eventId }: { eventId: string }) {
   const { canvasRef, contextRef, drawEverything } = useCanvasContext();
+  const { certificateId } = useRouter().query;
 
   const previousTouchRef = useRef<Touch | null>(null);
   const distanceBetweenTouchesRef = useRef<number>(0);
@@ -65,6 +64,7 @@ export default function Canvas({ eventId }: { eventId: string }) {
   const appendFreeDrawPointToCanvasObject = useCanvasObjects((state) => state.appendFreeDrawPointToCanvasObject);
   const moveCanvasObject = useCanvasObjects((state) => state.moveCanvasObject);
   const resizeCanvasObject = useCanvasObjects((state) => state.resizeCanvasObject);
+  const resetCanvasObjects = useCanvasObjects((state) => state.resetCanvasObjects);
 
   const canvasWorkingSize = useCanvasWorkingSize((state) => state.canvasWorkingSize);
 
@@ -88,8 +88,128 @@ export default function Canvas({ eventId }: { eventId: string }) {
 
   const activeObject = canvasObjects.find((canvasObject) => canvasObject.id === activeObjectId);
 
-  // On pointer down
+  const getCertElements = async () => {
+    try {
+      const response = await fetchFilteredGlobal('Certificate', { _id: certificateId });
 
+      if (response && response[0]) {
+        const certificateData = response[0];
+        resetCanvasObjects();
+
+        // Filtrar primero las imágenes de fondo
+        const imageElements = certificateData.elements.filter((element: { type: string }) => element.type === 'image');
+        const nonImageElements = certificateData.elements.filter((element: { type: string }) => element.type !== 'image');
+
+        // Cargar todas las imágenes de fondo primero
+        await Promise.all(
+          imageElements.map(async (element: CanvasObject) => {
+            const existingObject = canvasObjects.find((obj) => obj.id === element.id);
+            if (!existingObject) {
+              await loadImage(element, element.imageUrl);
+            }
+          })
+        );
+
+        // Luego, cargar el resto de los elementos (textos, rectángulos, etc.)
+        nonImageElements.forEach((element: CanvasObject) => {
+          // Verificar si el objeto ya existe
+          const existingObject = canvasObjects.find((obj) => obj.id === element.id);
+          if (!existingObject) {
+            switch (element.type) {
+              case 'rectangle':
+                appendRectangleObject({
+                  id: element.id,
+                  x: element.x,
+                  y: element.y,
+                  width: element.width,
+                  height: element.height,
+                  backgroundColorHex: element.backgroundColorHex,
+                  strokeColorHex: element.strokeColorHex,
+                  strokeWidth: element.strokeWidth,
+                  opacity: element.opacity,
+                  borderRadius: element.borderRadius,
+                });
+                break;
+              case 'text':
+                appendTextObject({
+                  id: element.id,
+                  x: element.x,
+                  y: element.y,
+                  width: element.width,
+                  height: element.height,
+                  text: element.text,
+                  fontColorHex: element.fontColorHex,
+                  fontSize: element.fontSize,
+                  fontFamily: element.fontFamily,
+                  fontStyle: element.fontStyle,
+                  fontWeight: element.fontWeight,
+                  fontVariant: element.fontVariant,
+                  textAlignHorizontal: element.textAlignHorizontal,
+                  textAlignVertical: element.textAlignVertical,
+                  textJustify: element.textJustify,
+                  opacity: element.opacity,
+                  fontLineHeightRatio: element.fontLineHeightRatio,
+                });
+                break;
+              case 'free-draw':
+                appendFreeDrawObject({
+                  id: element.id,
+                  x: element.x,
+                  y: element.y,
+                  width: element.width,
+                  height: element.height,
+                  strokeColorHex: element.strokeColorHex,
+                  strokeWidth: element.strokeWidth,
+                  opacity: element.opacity,
+                  freeDrawPoints: element.freeDrawPoints,
+                });
+                break;
+              case 'attribute':
+                if (element) {
+                  appendAttributeObject({
+                    id: element.id,
+                    x: element.x,
+                    y: element.y,
+                    width: element.width,
+                    height: element.height,
+                    text: element.text,
+                    opacity: element.opacity || 100,
+                    fontColorHex: element.fontColorHex || '#000000',
+                    fontSize: element.fontSize || 16,
+                    fontFamily: element.fontFamily || 'Arial',
+                    fontStyle: element.fontStyle || 'normal',
+                    fontVariant: element.fontVariant || 'normal',
+                    fontWeight: element.fontWeight || 'normal',
+                    fontLineHeightRatio: element.fontLineHeightRatio || 1.2,
+                  });
+                }
+                break;
+              default:
+                console.warn(`Tipo de elemento desconocido: ${element.type}`);
+                break;
+            }
+          }
+        });
+      }
+    } catch (error) {
+      console.error('Error cargando el certificado:', error);
+    }
+  };
+
+  // Función para cargar una imagen
+  const loadImage = async (element: CanvasObject, imageUrl: string) => {
+    await commonPushImageObject(element, imageUrl);
+  };
+
+  useEffect(() => {
+    if (certificateId) {
+      getCertElements();
+    } else {
+      resetCanvasObjects();
+    }
+  }, [certificateId]);
+
+  // On pointer down
   const onPointerDown = (event: PointerOrTouchEvent) => {
     event.preventDefault();
     const canvas = canvasRef.current;
@@ -283,7 +403,6 @@ export default function Canvas({ eventId }: { eventId: string }) {
   };
 
   // On pointer move
-
   const onPointerMove = (event: PointerOrTouchEvent) => {
     event.preventDefault();
     const canvas = canvasRef.current;
@@ -405,7 +524,6 @@ export default function Canvas({ eventId }: { eventId: string }) {
   };
 
   // On pointer up
-
   const onPointerUp = (event: PointerOrTouchEvent) => {
     event.preventDefault();
     setActionMode(null);
@@ -453,99 +571,94 @@ export default function Canvas({ eventId }: { eventId: string }) {
   };
 
   // Para insertar una imagen
-  const imageUrl = 'https://ik.imagekit.io/6cx9tc1kx/fondo%202.jpg?updatedAt=1725555286442';
-
-  const pushImageObject = async ({ imageElement }: OptionItem) => {
-    const createdObjectId = generateUniqueId();
+  const pushImageObject = async (element: CanvasObject, imageUrl: string, imageElement: HTMLImageElement) => {
     appendImageObject({
-      id: createdObjectId,
-      x: 0,
-      y: 0,
-      width: 1920,
-      height: 1080,
-      opacity: 100,
+      id: element.id,
+      x: element.x,
+      y: element.y,
+      width: element.width,
+      height: element.height,
+      opacity: element.opacity,
       imageUrl,
       imageElement,
     });
-    setActiveObjectId(createdObjectId);
-    setUserMode('select');
   };
 
-  const commonPushImageObject = async (url: string) => {
+  const commonPushImageObject = async (element: CanvasObject, url: string) => {
     const imageElement = await getImageElementFromUrl(url);
-    const dimensions = await getDimensionsFromImage({
-      context: contextRef?.current,
-      imageObject: { x: 0, y: 0, imageElement },
-    });
-    pushImageObject({ imageUrl: url, imageElement, dimensions });
+    // const dimensions = await getDimensionsFromImage({
+    //   context: contextRef?.current,
+    //   imageObject: { x: 0, y: 0, imageElement },
+    // });
+    pushImageObject(element, url, imageElement);
   };
+  //   await commonPushImageObject(imageUrl);
 
-  const handleAppendText = async () => {
-    await commonPushImageObject(imageUrl);
+  //   const idCertificateName = generateUniqueId();
+  //   const certificateName = 'Juan Felipe Mosquera Lasso';
+  //   appendTextObject({
+  //     id: idCertificateName,
+  //     x: 356,
+  //     y: 339,
+  //     width: 1211,
+  //     height: 100,
+  //     text: certificateName,
+  //     textAlignHorizontal: 'center',
+  //     textAlignVertical: 'middle',
+  //     textJustify: false,
+  //     fontColorHex: '#000000',
+  //     fontSize: 44,
+  //     fontFamily: 'sans-serif',
+  //     fontStyle: 'normal',
+  //     fontWeight: 'normal',
+  //     fontVariant: 'normal',
+  //     fontLineHeightRatio: 1,
+  //     opacity: 100,
+  //   });
 
-    const idCertificateName = generateUniqueId();
-    const certificateName = 'Juan Felipe Mosquera Lasso';
-    appendTextObject({
-      id: idCertificateName,
-      x: 356,
-      y: 339,
-      width: 1211,
-      height: 100,
-      text: certificateName,
-      textAlignHorizontal: 'center',
-      textAlignVertical: 'middle',
-      textJustify: false,
-      fontColorHex: '#000000',
-      fontSize: 44,
-      fontFamily: 'sans-serif',
-      fontStyle: 'normal',
-      fontWeight: 'normal',
-      fontVariant: 'normal',
-      fontLineHeightRatio: 1,
-      opacity: 100,
-    });
-
-    const idCertificateNumber = generateUniqueId();
-    const certificateNumber = '1003815193';
-    appendTextObject({
-      id: idCertificateNumber,
-      x: 669,
-      y: 471,
-      width: 582,
-      height: 100,
-      text: certificateNumber,
-      textAlignHorizontal: 'center',
-      textAlignVertical: 'middle',
-      textJustify: false,
-      fontColorHex: '#000000',
-      fontSize: 35,
-      fontFamily: 'sans-serif',
-      fontStyle: 'normal',
-      fontWeight: 'normal',
-      fontVariant: 'normal',
-      fontLineHeightRatio: 1,
-      opacity: 100,
-    });
-  };
+  //   const idCertificateNumber = generateUniqueId();
+  //   const certificateNumber = '1003815193';
+  //   appendTextObject({
+  //     id: idCertificateNumber,
+  //     x: 669,
+  //     y: 471,
+  //     width: 582,
+  //     height: 100,
+  //     text: certificateNumber,
+  //     textAlignHorizontal: 'center',
+  //     textAlignVertical: 'middle',
+  //     textJustify: false,
+  //     fontColorHex: '#000000',
+  //     fontSize: 35,
+  //     fontFamily: 'sans-serif',
+  //     fontStyle: 'normal',
+  //     fontWeight: 'normal',
+  //     fontVariant: 'normal',
+  //     fontLineHeightRatio: 1,
+  //     opacity: 100,
+  //   });
+  // };
 
   const handleSave = async () => {
     const elementsToSave = canvasObjects.map((object) => ({
-      id: object.id,
-      type: object.type,
-      x: object.x,
-      y: object.y,
-      width: object.width,
-      height: object.height,
-      additionalProps: { ...object },
+      ...object,
     }));
 
     try {
-      await createCertificate(eventId, elementsToSave);
+      if (certificateId) {
+        const response = await updateCertificate(certificateId, elementsToSave);
+        if (response) {
+          alert('Certificado actualizado');
+        }
+      } else {
+        const response = await createCertificate(eventId, elementsToSave);
+        if (response) {
+          alert('Certificado guardado');
+        }
+      }
     } catch (error) {
       console.log('Error saving certificate:', error);
     }
-
-    // En el futuro, podrías enviar `elementsToSave` al backend para guardarlos en la base de datos
   };
 
   return (
@@ -577,9 +690,6 @@ export default function Canvas({ eventId }: { eventId: string }) {
       <Group justify="start" m="md" style={{ position: 'fixed', bottom: '0', zIndex: 9999 }}>
         <Button name="Save" value="" onClick={() => handleSave()}>
           Guardar
-        </Button>
-        <Button name="Add text" value="" onClick={() => handleAppendText()}>
-          Generar certificado
         </Button>
       </Group>
       <div

@@ -24,9 +24,9 @@ export default function OverlayMenu() {
     router.push('/dashboard');
   };
 
-  const handleEditClick = () => {
-    router.push('/admin');
-  };
+  // const handleEditClick = () => {
+  //   router.push('/admin');
+  // };
 
   return (
     <WrapperDiv>
@@ -50,7 +50,7 @@ export default function OverlayMenu() {
                   leftSection={tab.icon}
                   onClick={() => {
                     setActiveObjectId(null);
-                    handleEditClick();
+                    // handleEditClick();
                     openMenuModal(tab.id);
                   }}
                 >

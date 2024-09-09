@@ -7,6 +7,7 @@ import { FaDownload } from 'react-icons/fa';
 import { fetchFilteredGlobal } from '~/api';
 import CanvasPreview from '~/components/CanvasPreview';
 import { CANVAS_PREVIEW_UNIQUE_ID } from '~/config/globalElementIds';
+import { CanvasObject } from '~/config/types';
 import useCanvasObjects from '~/store/useCanvasObjects';
 import generateUniqueId from '~/utils/generateUniqueId';
 import getImageElementFromUrl from '~/utils/getImageElementFromUrl';
@@ -19,37 +20,15 @@ interface Attendee {
   properties: Record<string, unknown>;
 }
 
-interface CertificateElement {
-  id: string;
-  type: 'text' | 'attribute' | 'image';
-  x: number;
-  y: number;
-  width: number;
-  height: number;
-  additionalProps: {
-    text?: string;
-    imageUrl?: string;
-    opacity?: number;
-    fontColorHex?: string;
-    fontSize?: number;
-    fontFamily?: string;
-    fontStyle?: 'normal' | 'italic' | 'oblique';
-    fontVariant?: 'normal' | 'small-caps';
-    fontWeight?: 'normal' | 'bold' | 'bolder' | 'lighter' | '100' | '200' | '300' | '400' | '500' | '600' | '700' | '800' | '900';
-    fontLineHeightRatio?: number;
-    [key: string]: unknown;
-  };
-}
-
 interface Certificate {
-  elements: CertificateElement[];
+  elements: CanvasObject[];
   event: string;
   createdAt: string;
 }
 
 export default function Certificado() {
   const [attendee, setAttendee] = useState<Attendee | null>(null);
-  const [certificateElements, setCertificateElements] = useState<CertificateElement[]>([]);
+  const [certificateElements, setCertificateElements] = useState<CanvasObject[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const router = useRouter();
   const { attendeeId, eventId } = router.query;
@@ -85,15 +64,7 @@ export default function Certificado() {
 
   // Insertar imagen en el canvas
   const pushImageObject = useCallback(
-    async ({
-      imageUrl,
-      imageElement,
-      element,
-    }: {
-      imageUrl: string;
-      imageElement: HTMLImageElement;
-      element: CertificateElement;
-    }) => {
+    async ({ imageUrl, imageElement, element }: { imageUrl: string; imageElement: HTMLImageElement; element: CanvasObject }) => {
       appendImageObject({
         id: element.id,
         x: element.x,
@@ -110,7 +81,7 @@ export default function Certificado() {
 
   // Common image loader and appender
   const commonPushImageObject = useCallback(
-    async (element: CertificateElement, url: string) => {
+    async (element: CanvasObject, url: string) => {
       const imageElement = await getImageElementFromUrl(url);
       await pushImageObject({ imageUrl: url, imageElement, element });
     },
@@ -128,38 +99,38 @@ export default function Certificado() {
             y: element.y,
             width: element.width,
             height: element.height,
-            text: element.additionalProps.text || '',
-            opacity: element.additionalProps.opacity || 100,
-            fontColorHex: element.additionalProps.fontColorHex || '#000000',
-            fontSize: element.additionalProps.fontSize || 16,
-            fontFamily: element.additionalProps.fontFamily || 'Arial',
-            fontStyle: element.additionalProps.fontStyle || 'normal',
-            fontVariant: element.additionalProps.fontVariant || 'normal',
-            fontWeight: element.additionalProps.fontWeight || 'normal',
-            fontLineHeightRatio: element.additionalProps.fontLineHeightRatio || 1.2,
+            text: element.text || '',
+            opacity: element.opacity || 100,
+            fontColorHex: element.fontColorHex || '#000000',
+            fontSize: element.fontSize || 16,
+            fontFamily: element.fontFamily || 'Arial',
+            fontStyle: element.fontStyle || 'normal',
+            fontVariant: element.fontVariant || 'normal',
+            fontWeight: element.fontWeight || 'normal',
+            fontLineHeightRatio: element.fontLineHeightRatio || 1.2,
           });
           break;
         case 'attribute':
-          element.additionalProps.text = (attendee?.properties[element.additionalProps.text || ''] as string) || '';
+          element.text = (attendee?.properties[element.text || ''] as string) || '';
           appendAttributeObject({
             id: element.id,
             x: element.x,
             y: element.y,
             width: element.width,
             height: element.height,
-            text: element.additionalProps.text,
-            opacity: element.additionalProps.opacity || 100,
-            fontColorHex: element.additionalProps.fontColorHex || '#000000',
-            fontSize: element.additionalProps.fontSize || 16,
-            fontFamily: element.additionalProps.fontFamily || 'Arial',
-            fontStyle: element.additionalProps.fontStyle || 'normal',
-            fontVariant: element.additionalProps.fontVariant || 'normal',
-            fontWeight: element.additionalProps.fontWeight || 'normal',
-            fontLineHeightRatio: element.additionalProps.fontLineHeightRatio || 1.2,
+            text: element.text,
+            opacity: element.opacity || 100,
+            fontColorHex: element.fontColorHex || '#000000',
+            fontSize: element.fontSize || 16,
+            fontFamily: element.fontFamily || 'Arial',
+            fontStyle: element.fontStyle || 'normal',
+            fontVariant: element.fontVariant || 'normal',
+            fontWeight: element.fontWeight || 'normal',
+            fontLineHeightRatio: element.fontLineHeightRatio || 1.2,
           });
           break;
         case 'image':
-          await commonPushImageObject(element, element.additionalProps.imageUrl || '');
+          await commonPushImageObject(element, element.imageUrl || '');
           break;
         default:
           break;
