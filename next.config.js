@@ -1,7 +1,7 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: false,
-  distDir: 'dist',
+  distDir: '.next',
   output: 'export',
   trailingSlash: true,
   skipTrailingSlashRedirect: true,
