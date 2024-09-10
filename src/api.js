@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-// const API_URL = 'https://deveviusapi.geniality.com.co/api';
+const API_URL = 'https://deveviusapi.geniality.com.co/api';
 // const API_URL = 'http://127.0.0.1:8000/api';
 // const API_URL = 'http://localhost:5000/api';
 const API_URL_NEW = 'https://back-certificados.vercel.app/api';
